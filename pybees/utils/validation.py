@@ -107,3 +107,58 @@ def check_coordinate_array(coordinates):
                          f" coordinates and 2 dimensions.\n\n{example!r}")
     
     return coordinates
+
+
+# =============================================================================
+# User defined function checking
+# =============================================================================
+
+def check_discrete_func(func):
+    """Combinatorial cost function validation function
+    
+    The input function is checked with a valid input and it's output is 
+    assessed for correctness. Specifically, the cost function should accept
+    a `permutations` arguments, which represents an np.ndarray with shape
+    (n_permutations, n_coordinates). This array is used to permute the 
+    coordinates also passed to the function. With the coordinates permuted
+    for `n_permutations`, the "cost" for each is assessed. For example, a 
+    typical cost function is the total tour distance, which for a given 
+    permutation, calculates the distance between all the points in a round 
+    trip.
+    
+    Parameters
+    ----------
+    func : [type]
+        [description]
+    
+    Returns
+    -------
+    [type]
+        [description]
+    
+    Raises
+    ------
+    AttributeError
+        [description]
+    TypeError
+        [description]
+    IndexError
+        [description] 
+    """
+    try:
+        arr = np.random.randint(0, 10, [10, 2])
+        permutations = np.random.rand(3, arr.shape[0]).argsort(1)
+        
+        cost = func(permutations, arr)
+    except:
+        raise AttributeError("`func` should accept an np.ndarray with shape  "
+                             "(m, n) where m >= 3 and n >= 2. The function "
+                             "should return an np.ndarray with shape (m,). "
+                             "See the examples for SimpleBeesDiscrete()")
+
+    if not isinstance(cost, np.ndarray):
+        raise TypeError("`cost_function` should return an np.ndarray")
+    elif cost.ndim != 1 or cost.size != permutations.shape[0]:
+        raise ValueError(f"Bad shape {cost.shape} . func should return np.ndarray "
+                         f"with shape ({permutations.shape[0]},) but detected "
+                         f"shape {cost.shape}")
