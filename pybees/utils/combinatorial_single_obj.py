@@ -72,14 +72,3 @@ def tour_distance(bee_permutations, coordinates):
         [np.linalg.norm(t[1:, :] - t[:-1, :], axis=1).sum() for t in tour])
 
     return tour_dist
-
-
-
-np.random.seed(0)
-
-coordinates = np.random.randint(0, 50, [10, 2])
-permutations = np.random.rand(2, 10).argsort(1)
-
-print(coordinates)
-print(permutations)
-print(tour_distance(permutations, coordinates))
