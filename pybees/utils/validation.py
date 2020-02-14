@@ -28,3 +28,82 @@ def check_shape(x, two_dim=False):
 # =============================================================================
 # Input checking
 # =============================================================================
+
+def check_coordinate_array(coordinates):
+    """Input validation on np.ndarray for combinatorial optimization problems.
+
+    By default, the input is checked to be a non-empty 2D array containing
+    only finite values. If the dtype of the array is object, attempt
+    converting to float, raising on failure [1]. The input is also checked 
+    against the minimum shape requirement of (3, 2)  
+
+    Parameters
+    ----------
+    coordinates : ndarray
+        Input object to check / convert.
+        
+    Returns
+    -------
+    coordinates_converted : np.ndarray
+    
+    References
+    ----------
+    [1] https://scikit-learn.org/stable/modules/generated/sklearn.utils.
+    check_array.html
+    
+    Examples
+    --------
+    Checking a valid array.
+    
+    >>> coordinates = np.array([[14, 17], [15, 11], [10,  3]])
+    >>> converted_coordinates = check_coordinate_array(coordinates) 
+    ...
+    array([[14., 17.], 
+           [15., 11.], 
+           [10.,  3.]])
+    
+    
+    
+    Checking an array containing a string.
+    
+    >>> coordinates np.array([[1,2,3], [1,2,"3"], [1,2,3]])
+    >>> converted_coordinates = check_coordinate_array(coordinates) 
+    ...
+    ValueError: Detected incorrect type: dtype('<U11'). `coordinates` 
+        must contain either integers/floats. Try,
+        `your_array = your_array.astype(np.float64).`
+    """
+
+    example = np.array([[0,1], [2,3], [4,5]])
+    
+    if not isinstance(coordinates, np.ndarray):
+        raise TypeError(f"`coordinates` must be an np.ndarray. Detected "
+                        f"{coordinates!r}")
+        
+    # Use sklearn.utils.validation.assert_all_finite to determine if all 
+    # inputs to 'coordinates' are finite
+    assert_all_finite(coordinates)
+    
+    if coordinates.dtype.kind not in "fi":
+        raise ValueError(f"Detected incorrect type: {coordinates.dtype!r}. "
+                         "`coordinates` must contain either integers/floats. "
+                         "Try, `your_array = your_array.astype(np.float64).`")
+        
+    coordinates = coordinates.astype(np.float64)
+    
+    if coordinates.ndim != 2:
+        raise ValueError(f"Bad shape {coordinates.shape}. `coordinates` must " 
+                         "have shape (m, n) where `m` is the number of "
+                         "coordinates and `m` is the number of dimensions. "
+                         "See the examples.")
+        
+    m, n = coordinates.shape
+    
+    if n < 2 or m < 3: 
+        raise ValueError(f"Bad shape {(m, n)}. {n} dimension/s and {m} "
+                         f"coordinate/s were detected. `coordinates` must have"
+                         " at least 3 coordinates and 2 dimensions. "
+                         "`coordinates` could take following form which has 3"
+                         f" coordinates and 2 dimensions.\n\n{example!r}")
+    
+    return coordinates
