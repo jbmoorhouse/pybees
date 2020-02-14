@@ -25,8 +25,7 @@ __all__ = [
     "swap",
     "reversion",
     "insertion",
-    "GlobalSearch",
-    "tour_distance"
+    "GlobalSearch"
 ]
 
 # =============================================================================
@@ -38,8 +37,8 @@ def _random_choice_unique(arr):
     
     This function accepts a 2D array and returns unique indices for each row,
     but with the possibility of repeated values over multiple rows [1]. This 
-    simulates the behaviour of `np.random.choice` when replace is set to `False`
-    on a 1D array, but over multiple rows
+    simulates the behaviour of `np.random.choice` when replace is set to 
+    `False` on a 1D array, but over multiple rows
     
     Parameters
     ----------
@@ -96,7 +95,7 @@ def _random_choice_unique(arr):
                          .format(m, n))
     
     # Get sorted random indices to slice 2D array before mutation.
-    return np.sort(np.random.rand(m,n).argsort(1)[:,:2], axis=1)
+    return np.sort(np.random.rand(m, n).argsort(1)[:,:2], axis=1)
     
 def _prepare_array(bee_permutation, n_bees):
 
