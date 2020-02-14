@@ -181,5 +181,65 @@ def drop_wave(x):
 
     return -frac_one / frac_two
 
-x = np.random.randint(-10,10,size=[10,3])
-print(drop_wave(x))
+
+# =============================================================================
+# Steep ridges/drops
+# =============================================================================
+
+def de_jong(x):
+    """Implementation of the de-jong 5th function. 
+    
+    Please see https://www.sfu.ca/~ssurjano/dejong5.html for more details.
+
+    Parameters
+    ----------
+    x : ndarray with shape (n_coordinates, 2)
+        1D or 2D array of integers or floats. Each row represents the 
+        coordinates of a single point in a hypercube with 2 dimensions.
+        
+    Returns
+    -------
+    res : ndarray with shape (n_coordinates,)
+        the output from the drop_wave function as defined.
+
+    Examples
+    --------
+    >>> x = np.random.randint(-10,10, size=[10,2])
+    >>> x
+    array([[ 7, -4],
+           [ 3,  4],
+           [ 7, -4],
+           [ 9,  7],
+           [-7,  8],
+           [-8, -1],
+           [ 9, -1],
+           [ 5, -7],
+           [ 4, -3],
+           [-9,  5]]))
+
+    >>> de_jong(x)
+    array([497.32791193, 453.01047752, 497.32791193, 497.92766864,
+           498.05151155, 498.03139838, 497.34461417, 497.42674123,
+           453.01047735, 497.42359525])
+    """
+
+    x = x[np.newaxis, :] if x.ndim == 1 else x 
+    
+    if x.shape[1] != 2:
+        raise ValueError(f"Bad shape {x.shape}. ``x`` must have "
+                         "shape(n_coordinates, 2). Try "
+                         f"shape({x.shape[0]}, 2)")
+        
+    a = np.array([-32,-16,0,16,32])
+    a_one = np.repeat(np.tile(a, 5)[np.newaxis, :], x.shape[0], axis=0)
+    a_two = np.repeat(np.repeat(a, 5)[np.newaxis, :], x.shape[0], axis=0)
+    
+    i = np.repeat(np.arange(1, 26)[np.newaxis,:], x.shape[0], axis=0)
+    
+    sum_denom = (
+        (i + (x[:,0][:, np.newaxis] - a_one) ** 6 + 
+        (x[:,1][:, np.newaxis] - a_two) ** 6))
+
+    return 1 / (0.002 + np.sum(1 / sum_denom, axis = 1)) 
+    
+
