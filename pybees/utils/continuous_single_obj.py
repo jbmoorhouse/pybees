@@ -17,6 +17,21 @@ import numpy as np
 PI = np.pi
 
 # =============================================================================
+# Utilities
+# =============================================================================
+
+def check_shape(x, two_dim=False):
+    x = x[np.newaxis, :] if x.ndim == 1 else x
+
+    if two_dim:
+        if x.shape[1] != 2:
+            raise ValueError(f"Bad shape {x.shape}. ``x`` must have "
+                            "shape(n_coordinates, 2). Try "
+                            f"shape({x.shape[0]}, 2)")
+
+    return x
+
+# =============================================================================
 # Many local minima functions
 # =============================================================================
 
@@ -58,7 +73,7 @@ def levy(x):
            9.55739901e+00, 3.25729367e+01, 1.99433481e+01, 2.01038861e+01,
            1.51250000e+01, 1.25573990e+01])
     """    
-    x = x[np.newaxis, :] if x.ndim == 1 else x
+    x = check_shape(x)
 
     w = 1 + (x - 1) / 4
 
@@ -119,7 +134,7 @@ def ackley(x, a = 20, b = 0.2, c = 2 * PI):
            12.56809083, 15.88518678])
     """
 
-    x = x[np.newaxis, :] if x.ndim == 1 else x
+    x = check_shape(x)
     d = x.shape[1]
         
     sum_one = np.sum(x ** 2, axis=1)
@@ -169,13 +184,8 @@ def drop_wave(x):
            -4.74197545e-02, -3.48880956e-02, -3.59855661e-02, 
            -6.39818116e-02])
     """
-    x = x[np.newaxis, :] if x.ndim == 1 else x          
+    x = check_shape(x, two_dim=True)          
     
-    if x.shape[1] != 2:
-        raise ValueError(f"Bad shape {x.shape}. ``x`` must have "
-                         "shape(n_coordinates, 2). Try "
-                         f"shape({x.shape[0]}, 2)")
-        
     frac_one = 1 + np.cos(12 * ((x[:,0] ** 2 + x[:,1] ** 2) ** 0.5))
     frac_two = 0.5 * (x[:,0] ** 2 + x[:,1] ** 2) + 2
 
@@ -223,12 +233,7 @@ def de_jong(x):
            453.01047735, 497.42359525])
     """
 
-    x = x[np.newaxis, :] if x.ndim == 1 else x 
-    
-    if x.shape[1] != 2:
-        raise ValueError(f"Bad shape {x.shape}. ``x`` must have "
-                         "shape(n_coordinates, 2). Try "
-                         f"shape({x.shape[0]}, 2)")
+    x = check_shape(x, two_dim=True)
         
     a = np.array([-32,-16,0,16,32])
     a_one = np.repeat(np.tile(a, 5)[np.newaxis, :], x.shape[0], axis=0)
@@ -243,3 +248,91 @@ def de_jong(x):
     return 1 / (0.002 + np.sum(1 / sum_denom, axis = 1)) 
     
 
+def easom(x):
+    """Implementation of the Easom function. 
+    
+    Please see https://www.sfu.ca/~ssurjano/easom.html for more details.
+
+    Parameters
+    ----------
+    x : ndarray with shape (n_coordinates, 2)
+        1D or 2D array of integers or floats. Each row represents the 
+        coordinates of a single point in a hypercube with 2 dimensions.
+        
+    Returns
+    -------
+    res : ndarray with shape (n_coordinates,)
+        the output from the drop_wave function as defined.
+
+    Examples
+    --------
+    >>> x = np.random.randint(-10,10, size=[10,2])
+    >>> x
+    array([[ -2,   2],
+           [-10,   8],
+           [  1,  -7],
+           [ -5,  -3],
+           [  6,  -1],
+           [-10,  -5],
+           [  5,   0],
+           [ -8,  -5],
+           [ -3,  -4],
+           [-10,  -1]]))
+
+    >>> easom(x)
+    array([-1.55420349e-013, -6.79566829e-087, -8.91419360e-048,
+            1.90445117e-046, -5.21462799e-012,  3.85363091e-105,
+           -4.64059295e-007,  8.26115916e-085, -1.90419960e-039,
+            1.59876227e-083]),
+    """
+
+    x = check_shape(x, two_dim=True)
+    
+    term_one = -(np.cos(x[:, 0]) * np.cos(x[:, 1]))
+    term_two = np.exp(-(x[:,0] - PI) ** 2 - (x[:, 1] - PI) ** 2)
+
+    return term_one * term_two
+
+
+def michalewicz(x, m=10):
+    """Implementation of the michalewicz 5th function. 
+    
+    Please see https://www.sfu.ca/~ssurjano/michal.html for more details.
+
+    Parameters
+    ----------
+    x : numpy.ndarray 
+        1D array containing data with type 'float' or 'int'
+    m : int or float, default: 10
+
+    Returns
+    -------
+    z : float
+        The output from the michalewicz function as defined.
+
+    Examples
+    --------
+    >>> x = np.random.randint(-10,10, size=[10, 2])
+    >>> x
+    array([[ -2,   2],
+           [-10,   8],
+           [  1,  -7],
+           [ -5,  -3],
+           [  6,  -1],
+           [-10,  -5],
+           [  5,   0],
+           [ -8,  -5],
+           [ -3,  -4],
+           [-10,  -1]]))
+
+    >>> michalewicz(x)
+    array([ 3.70134398e-01, -7.03125913e-09, -6.83247108e-11, 
+           -8.60871345e-01, 3.00473889e-02, -7.03127737e-09,  
+            8.60871713e-01,  9.66330400e-01, -4.49539908e-04,  
+            2.55667732e-05]),
+    """
+    
+    x = check_shape(x)
+    
+    i = np.arange(1, x.shape[1] + 1)
+    return - np.sum(np.sin(x) * np.sin(((i*x**2) / PI)) ** (2*m), axis=1)
