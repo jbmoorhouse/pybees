@@ -35,7 +35,7 @@ def levy(x):
 
     Returns
     -------
-    res : ndarray with shape (n_dimensions,)
+    res : ndarray with shape (n_coordinates,)
         The output from the levy function as defined. 
 
     Examples
@@ -83,8 +83,7 @@ def ackley(x, a = 20, b = 0.2, c = 2 * PI):
 
     Parameters
     ----------
-    x : ndarray 
-        ndarray with shape (n_coordinates, n_dimensions)
+    x : ndarray with shape (n_coordinates, n_dimensions)
         1D or 2D array of integers or floats. Each row represents the 
         coordinates of a single point in a hypercube with n_dimensions.
     a : int or float, default: 20
@@ -96,7 +95,7 @@ def ackley(x, a = 20, b = 0.2, c = 2 * PI):
 
     Returns
     -------
-    res : ndarray with shape (n_dimensions,)
+    res : ndarray with shape (n_coordinates,)
         The output from the ackley function as defined.
 
     Examples
@@ -114,7 +113,7 @@ def ackley(x, a = 20, b = 0.2, c = 2 * PI):
            [ -7,   0],
            [ -5, -10]]))
 
-    >> ackley(x)
+    >>> ackley(x)
     array([13.60474155, 13.76896846, 10.27575727, 15.06806072, 
            11.91351815, 10.27575727,  7.98891081, 14.73244732, 
            12.56809083, 15.88518678])
@@ -131,5 +130,56 @@ def ackley(x, a = 20, b = 0.2, c = 2 * PI):
 
     return term_one + term_two + a + np.exp(1)
 
+def drop_wave(x):
+    """Implementation of the drop wave function. 
+    
+    Please see https://www.sfu.ca/~ssurjano/drop.html for more details. The 
+    function is usually evaluated on the square xi ∈ [-5.12, 5.12], for 
+    all i = 1, 2. The function is applied column-wise
+
+    Parameters
+    ----------
+    x : ndarray with shape (n_coordinates, 2)
+        1D or 2D array of integers or floats. Each row represents the 
+        coordinates of a single point in a hypercube with 2 dimensions. 
+        
+    Returns
+    -------
+    res : ndarray with shape (n_coordinates,)
+        the output from the drop_wave function as defined.
+
+    Examples
+    --------
+    >>> x = np.random.randint(-10,10, size=[10,2])
+    >>> x
+    array([[ -7,   1],
+           [ -7,   9],
+           [  1, -10],
+           [  2,  -8],
+           [ -2,  -7],
+           [ -7,  -6],
+           [ -2,   5],
+           [  8,   6],
+           [ -4,   0],
+           [ -2,   7]]))
+
+    >>> drop_wave(x)
+    array([-1.64573188e-05, -1.73293421e-02, -2.56292536e-02, 
+           -2.76212905e-02, -6.39818116e-02, -4.98128978e-03,   
+           -4.74197545e-02, -3.48880956e-02, -3.59855661e-02, 
+           -6.39818116e-02])
+    """
+    x = x[np.newaxis, :] if x.ndim == 1 else x          
+    
+    if x.shape[1] != 2:
+        raise ValueError(f"Bad shape {x.shape}. ``x`` must have "
+                         "shape(n_coordinates, 2). Try "
+                         f"shape({x.shape[0]}, 2)")
+        
+    frac_one = 1 + np.cos(12 * ((x[:,0] ** 2 + x[:,1] ** 2) ** 0.5))
+    frac_two = 0.5 * (x[:,0] ** 2 + x[:,1] ** 2) + 2
+
+    return -frac_one / frac_two
+
 x = np.random.randint(-10,10,size=[10,3])
-print(ackley)
+print(drop_wave(x))
