@@ -17,9 +17,8 @@ import numpy as np
 PI = np.pi
 
 # =============================================================================
-# Many local functions
+# Many local minima functions
 # =============================================================================
-
 
 def levy(x):
     """Implementation of the levy function. 
@@ -31,12 +30,12 @@ def levy(x):
     Parameters
     ----------
     x : ndarray with shape (n_coordinates, n_dimensions)
-        2D array of integers or floats. Each row represents the coordinates
-        of a single point in a hypercube with n_dimensions.
+        1D or 2D array of integers or floats. Each row represents the 
+        coordinates of a single point in a hypercube with n_dimensions.
 
     Returns
     -------
-    z : ndarray with shape (n_dimensions,)
+    res : ndarray with shape (n_dimensions,)
         The output from the levy function as defined. 
 
     Examples
@@ -72,3 +71,65 @@ def levy(x):
 
     return term_one + sum_ + term_three
 
+
+def ackley(x, a = 20, b = 0.2, c = 2 * PI):
+    """Implementation of the ackley function. 
+
+    Please see https://www.sfu.ca/~ssurjano/ackley.html for more details.
+    Recommended variable values are: a = 20, b = 0.2 and c = 2π. The function 
+    is usually evaluated on the hypercube xi ∈ [-32.768, 32.768], for all 
+    i = 1, …, d, although it may be restricted to a smaller domain. The 
+    function is applied column-wise
+
+    Parameters
+    ----------
+    x : ndarray 
+        ndarray with shape (n_coordinates, n_dimensions)
+        1D or 2D array of integers or floats. Each row represents the 
+        coordinates of a single point in a hypercube with n_dimensions.
+    a : int or float, default: 20
+        function constant, see link for more details
+    b : int or float, default: 0.2
+        function constant, see link for more details
+    c : int or float, default: 2 * np.pi
+        function constant, see link for more details
+
+    Returns
+    -------
+    res : ndarray with shape (n_dimensions,)
+        The output from the ackley function as defined.
+
+    Examples
+    --------
+    >>> x = np.random.randint(-10,10,size=[10,2])
+    >>> x
+    array([[ -7,   4],
+           [ -2,   8],
+           [ -1,   5],
+           [  7,  -7],
+           [  4,   5],
+           [  5,  -1],
+           [ -3,  -2],
+           [  5,   8],
+           [ -7,   0],
+           [ -5, -10]]))
+
+    >> ackley(x)
+    array([13.60474155, 13.76896846, 10.27575727, 15.06806072, 
+           11.91351815, 10.27575727,  7.98891081, 14.73244732, 
+           12.56809083, 15.88518678])
+    """
+
+    x = x[np.newaxis, :] if x.ndim == 1 else x
+    d = x.shape[1]
+        
+    sum_one = np.sum(x ** 2, axis=1)
+    sum_two = np.sum(np.cos(c * x), axis=1)
+     
+    term_one = -a * np.exp(-b * ((sum_one/d) ** 0.5))
+    term_two = -np.exp(sum_two/d)
+
+    return term_one + term_two + a + np.exp(1)
+
+x = np.random.randint(-10,10,size=[10,3])
+print(ackley)
