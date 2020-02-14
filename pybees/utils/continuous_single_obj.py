@@ -8,28 +8,13 @@ algorithm for continuous optimization problems.
 # License: BSD 3 clause
 
 import numpy as np 
-
+from validation import check_shape
 
 # =============================================================================
 # Types and constants
 # =============================================================================
 
 PI = np.pi
-
-# =============================================================================
-# Utility functions
-# =============================================================================
-
-def check_shape(x, two_dim=False):
-    x = x[np.newaxis, :] if x.ndim == 1 else x
-
-    if two_dim:
-        if x.shape[1] != 2:
-            raise ValueError(f"Bad shape {x.shape}. ``x`` must have "
-                            "shape(n_coordinates, 2). Try "
-                            f"shape({x.shape[0]}, 2)")
-
-    return x
 
 # =============================================================================
 # Many local minima functions
