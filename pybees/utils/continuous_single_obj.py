@@ -1,6 +1,6 @@
 """
-This file contains a collection of test functions for testing the Bees 
-algorithm for optimisation problems
+This file contains a collection of common test functions to test the bees 
+algorithm for continuous optimization problems.
 """
 
 # Authors: Joseph Moorhouse
@@ -17,7 +17,7 @@ import numpy as np
 PI = np.pi
 
 # =============================================================================
-# Utilities
+# Utility functions
 # =============================================================================
 
 def check_shape(x, two_dim=False):
@@ -191,7 +191,6 @@ def drop_wave(x):
 
     return -frac_one / frac_two
 
-
 # =============================================================================
 # Steep ridges/drops
 # =============================================================================
@@ -301,14 +300,15 @@ def michalewicz(x, m=10):
 
     Parameters
     ----------
-    x : numpy.ndarray 
-        1D array containing data with type 'float' or 'int'
+    x : ndarray with shape (n_coordinates, n_dimensions)
+        1D or 2D array of integers or floats. Each row represents the 
+        coordinates of a single point in a hypercube with n_dimensions.
     m : int or float, default: 10
 
     Returns
     -------
-    z : float
-        The output from the michalewicz function as defined.
+    res : ndarray with shape (n_coordinates,)
+        the output from the drop_wave function as defined.
 
     Examples
     --------
