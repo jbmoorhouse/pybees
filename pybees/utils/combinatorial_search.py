@@ -4,14 +4,14 @@ problems. These include but are not limited to
 
 local search methods
 --------------------
-swap
-reversion
-insertion
+* swap
+* reversion
+* insertion
 
 global search methods
 ---------------------
-permute
-nearest_neighbour
+* permute
+* nearest_neighbour
 """
 
 # Authors: Joseph Moorhouse <moorhouse@live.co.uk>
