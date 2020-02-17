@@ -8,7 +8,8 @@ algorithm for continuous optimization problems.
 # License: BSD 3 clause
 
 import numpy as np 
-from validation import check_shape
+from pybees.utils.validation import check_shape
+
 
 # =============================================================================
 # Types and constants
@@ -47,7 +48,7 @@ def levy(x):
            [  9,  -6],
            [-10,  -1],
            [ -2,   6],
-           [ -7,   3],
+           [ -7,   3], 
            [  7,  -8],
            [  6,   6],
            [  1, -10],
