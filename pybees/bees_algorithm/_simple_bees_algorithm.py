@@ -823,17 +823,3 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
                           range_x=r_x, range_y=r_y, height=height, title=title)
 
         fig.show()
-
-
-from pybees.utils.continuous_single_obj import levy
-
-sbc = SimpleBeesContinuous(
-    n_scout_bees = 30, 
-    elite_site_params = (10, 20), 
-    best_site_params = (10, 10),
-    bounds = (-10,10), 
-    n_dim = 2,
-    nbhd_radius = 5,
-)
-
-print(sbc.optimize(levy))
