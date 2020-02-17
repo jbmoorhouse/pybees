@@ -1,8 +1,8 @@
 """
-This module gathers the a collection of cost functions for combinatorial
+This module gathers a collection of cost functions for combinatorial
 optimization problems. These include but are not limited to
 
-* tour_distance
+- tour_distance (for travelling salesperson problem)
 """
 
 # Authors: Joseph Moorhouse <moorhouse@live.co.uk>
