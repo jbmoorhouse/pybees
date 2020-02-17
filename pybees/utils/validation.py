@@ -162,3 +162,49 @@ def check_discrete_func(func):
         raise ValueError(f"Bad shape {cost.shape} . func should return np.ndarray "
                          f"with shape ({permutations.shape[0]},) but detected "
                          f"shape {cost.shape}")
+
+
+def check_continuous_func(func, n_dim):
+    """[summary]
+    
+    Parameters
+    ----------
+    func : [type]
+        [description]
+    
+    Returns
+    -------
+    [type]
+        [description]
+    
+    Raises
+    ------
+    AttributeError
+        [description]
+    TypeError
+        [description]
+    IndexError
+        [description]
+    """
+
+    try:
+        x = np.random.randint(10, size = [10, n_dim])
+        cost = func(x)
+    except:
+        raise AttributeError("`func` should accept an np.ndarray with shape  "
+                             "(dimension, n) where dimension >= 1 and n >= 1. " 
+                             "`dimension` is the number of dimensions a "
+                             "coordinate has and n is the number of point "
+                             " coordinates. `func` should return an "
+                             "np.ndarray with shape (m,).See the examples "
+                             "for SimpleBeesContinuous()")
+        
+    if not isinstance(cost, np.ndarray):
+        raise TypeError(f"`func` return must be an np.ndarray. Detected {cost}")
+        
+    elif cost.ndim != 1 or cost.size != x.shape[0]:
+        raise ValueError(f"Bad output shape{cost.shape}. `func` should return " 
+                         "an array with shape(n, ) where n is the number of point "
+                         "coordinates. Please see the example functions. E.g. "
+                         "func(np.random.randint(10, size = [10, 5])) should "
+                         "return shape(10,).")
