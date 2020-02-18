@@ -124,3 +124,59 @@ def test_n_scout_bees():
 
 
 
+def check_site_value(param_name, params):
+    # Check with too few elite sites
+    params[param_name] = (0, 20)
+
+    with pytest.raises(ValueError) as e_info:
+            SimpleBeesContinuous(**params)
+
+    assert str(e_info.value) == f'Detected 0 in {param_name}. All ' \
+        'local search parameters must be > 0.'
+
+    # Check with too many elite sites
+    params[param_name] = (params['n_scout_bees'] * 2, 20)
+
+    with pytest.raises(ValueError) as e_info:
+            SimpleBeesContinuous(**params)
+
+    assert str(e_info.value) == '10 scout bees and 24 local search bees were '\
+        'detected. The combination of all local bees must be less than or ' \
+        'equal to `n_scout_bees`. 2 local sites were detected, please amend ' \
+        'the total number of local search or scout bees.'
+
+    invalid_input_length = [(4, 20, 2), (4,)]
+
+    for v in invalid_input_length:
+        params[param_name] = v
+
+        with pytest.raises(ValueError) as e_info:
+                SimpleBeesContinuous(**params)
+
+        assert str(e_info.value) == f'Detected {param_name} = {v}. Please ' \
+            'specify values for the number of local search sites and number '\
+            f'of foraging bees. For example, {param_name} = (5, 20), ' \
+            'corresponds with 5 search sites and 20 foraging sites.'
+        
+    # set params back to the default value
+    params[param_name] = (4, 20)
+
+#def check_site_type(param_name, params):
+
+
+def test_site_params():
+
+    params = dict(
+        n_scout_bees = 10,
+        bounds = (-10,10), 
+        n_dim = 2,
+        nbhd_radius = 1.5, 
+        elite_site_params = (4, 20),
+        best_site_params = (4, 20),   
+    )
+
+    # test elite params type and length. 
+    # -------------------------------------------------------------------------
+    check_site_value('elite_site_params', params)
+    check_site_value('best_site_params', params)
+    
