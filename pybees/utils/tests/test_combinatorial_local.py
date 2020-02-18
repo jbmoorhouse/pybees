@@ -12,13 +12,19 @@ from pybees.utils.combinatorial_search import (
 # Local search tests
 # =============================================================================
 
-np.random.seed(0)
-
 def test_swap():
-    # simple test
+
+    # simple test with np.random.seed(0)
+    # -------------------------------------------------------------------------
+    np.random.seed(0)
     bee_permutation = np.arange(10)
-    x = _random_choice_unique(np.arange(160).reshape(16, -1))
+    res = swap(bee_permutation, 16)
 
-    assert swap(bee_permutation, x.shape[0]) == x
+    # swapped arguments and known solution with np.random.seed(0)
+    args = np.argwhere(res != bee_permutation)[:, 1].reshape(-1, 2)
+    sol = np.array([[4, 9], [4, 6], [4, 6], [0, 4], [3, 7], [3, 5], [7, 9],
+                    [5, 9], [2, 7], [7, 9], [4, 8], [3, 5], [6, 9], [2, 3],
+                    [1, 6],[4, 9]])
 
+    assert np.array_equal(args, sol)
 
