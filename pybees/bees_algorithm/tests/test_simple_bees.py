@@ -122,8 +122,6 @@ def test_n_scout_bees():
         assert str(e_info.value) == (
             '`n_scout_bees` must be of type `int`')
 
-
-
 def check_site_value(param_name, params):
     # Check with too few elite sites
     params[param_name] = (0, 20)
@@ -161,11 +159,31 @@ def check_site_value(param_name, params):
     # set params back to the default value
     params[param_name] = (4, 20)
 
-#def check_site_type(param_name, params):
+def check_site_type(param_name, params):
+    invalid_parameter_types = ["", 3, 1., 0]
+    invalid_element_type = [("", 20), (4, ""), (4, 1.1), (1.1, 20)]
 
+    # Check the parameter types
+    for t in invalid_parameter_types:
+        params[param_name] = t
+
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(**params)
+
+        assert str(e_info.value) == f'{param_name} must have a value of type ' \
+            f'list or tuple. {type(t)} detected.'
+
+    # Check the parameter element types
+    for t in invalid_element_type:
+        params[param_name] = t
+
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(**params)
+
+    # set params back to the default value
+    params[param_name] = (4, 20)
 
 def test_site_params():
-
     params = dict(
         n_scout_bees = 10,
         bounds = (-10,10), 
@@ -175,8 +193,61 @@ def test_site_params():
         best_site_params = (4, 20),   
     )
 
-    # test elite params type and length. 
+    # test site parameter value type and length. 
     # -------------------------------------------------------------------------
     check_site_value('elite_site_params', params)
     check_site_value('best_site_params', params)
+
+    # test site parameter element types 
+    # -------------------------------------------------------------------------
+    check_site_type('elite_site_params', params)
+    check_site_type('best_site_params', params)
+
+def test_bounds():
+    params = dict(
+        n_scout_bees = 10,
+        n_dim = 2,
+        nbhd_radius = 1.5, 
+        elite_site_params = (4, 20),
+        best_site_params = (4, 20),   
+    )
+
+    # Check type of bounds
+    invalid_type = ["", 1, 1.0, []]
+
+    for t in invalid_type:
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(bounds = t, **params)
+
+            assert str(e_info.value) == f'bounds must be of type tuple. ' \
+                'Detected {t}'
+
+    # Check the length of bounds 
+    invalid_length = [(-10,), (-10, 10, -10)]
+
+    for l in invalid_length:
+        with pytest.raises(ValueError) as e_info:
+            SimpleBeesContinuous(bounds = l, **params)
+            
+        assert str(e_info.value) == 'bounds must have two values only. ' \
+            f'Detected {len(l)}.'
     
+    # Check the type of the bounds elements
+    for b in [("", 10), (-10, ""), ("", "")]:
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(bounds = b, **params)
+
+    # Test that varmin is less than varmax
+    with pytest.raises(ValueError) as e_info:
+        SimpleBeesContinuous(bounds = (10, -10), **params)
+    
+    assert str(e_info.value) == 'varmax must be greater than varmin. ' \
+        'Received (10, -10). Consider (-10, 10)'
+
+    # Check the warning when varmin is equal to varmax
+    with pytest.warns(UserWarning) as w_info:
+        SimpleBeesContinuous(bounds=(10, 10), **params)
+
+    assert str(w_info[0].message.args[0]) == 'Detected bounds = (10, 10). ' \
+        'Consider changing bounds so that the upper bound is greater than ' \
+        'the lower bound'
