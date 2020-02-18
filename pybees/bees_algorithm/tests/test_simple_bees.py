@@ -87,3 +87,40 @@ def test_simple():
     )
 
     check_output(sbc_ackley_7, ackley, 0, [0, 0])
+
+
+def test_n_scout_bees():
+    params = dict(
+        elite_site_params = (40, 100), 
+        best_site_params = (40, 80),
+        bounds = (-10,10), 
+        n_dim = 2,
+        nbhd_radius = 1.5
+    )
+
+    # test with invalid integer inputs. 
+    # -------------------------------------------------------------------------
+    invalid_integers = [0, -1, -10]
+
+    for v in invalid_integers:
+        with pytest.raises(ValueError) as e_info:
+            SimpleBeesContinuous(n_scout_bees = v, **params)
+        
+        assert str(e_info.value) == (
+            f'Detected {v} scout bees. ``n_scout_bees`` must be > 2')
+
+
+
+    # test with incorrect types
+    # -------------------------------------------------------------------------
+    invalid_types = [100.0, "", []]
+
+    for t in invalid_types:
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(n_scout_bees = t, **params)
+
+        assert str(e_info.value) == (
+            '`n_scout_bees` must be of type `int`')
+
+
+
