@@ -14,6 +14,7 @@ from pybees.bees_algorithm._simple_bees_algorithm import (
 
 import pytest
 import numpy as np
+from scipy.optimize import rosen
 
 # =============================================================================
 #  SimpleBeesContinuous tests
@@ -279,10 +280,102 @@ def test_n_dim():
 
         assert str(e_info.value) == 'n_dim must be of type int'
 
-
     # Check values
     with pytest.raises(ValueError) as e_info:
         SimpleBeesContinuous(n_dim = 0, **params)
 
         assert str(e_info.value) == 'n_dim must be greater than 1'
 
+def test_nbhd_radius():
+    params = dict(
+        n_scout_bees = 10,
+        elite_site_params = (4, 20),
+        best_site_params = (4, 20),
+        bounds = (-10, 10),
+        n_dim = 2  
+    )
+
+    invalid_types = ["", [], ()]
+
+    for t in invalid_types:
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(**params, nbhd_radius = t)
+
+        assert str(e_info.value) == 'nbhd_radius must be of type int or float'
+
+    with pytest.raises(ValueError) as e_info:
+        SimpleBeesContinuous(**params, nbhd_radius = 0)
+
+    assert str(e_info.value) == 'nbhd_radius must be greater than 0'
+
+def test_nbhd_decay():
+    params = dict(
+        n_scout_bees = 10,
+        elite_site_params = (4, 20),
+        best_site_params = (4, 20),
+        bounds = (-10, 10),
+        n_dim = 2,
+        nbhd_radius = 1.5   
+    )
+
+    # Check type
+    invalid_types = [1, ""]
+
+    for t in invalid_types:
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(nbhd_decay = t, **params)
+
+        assert str(e_info.value) == 'nbhd_decay must be of type float'
+        
+    invalid_values = [-0.1, 0., 1.1]
+
+    for v in invalid_values:
+        with pytest.raises(ValueError) as e_info:
+            SimpleBeesContinuous(nbhd_decay = v, **params)
+
+        assert str(e_info.value) == 'nbhd_decay must satisfy ' \
+            '0 < nbhd_decay <= 1'
+
+def test_strict_bounds():
+    params = dict(
+        n_scout_bees = 10,
+        elite_site_params = (4, 20),
+        best_site_params = (4, 20),
+        bounds = (-10, 10),
+        n_dim = 2,
+        nbhd_radius = 1.5   
+    )
+
+    # Check type
+    invalid_types = [1, "", 1.1]
+
+    for t in invalid_types:
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(strict_bounds = t, **params)
+
+        assert str(e_info.value) == 'strict_bounds must be either True or ' \
+            f'False. Received {t}'
+
+def test_optimize():
+    sbc = SimpleBeesContinuous(
+        n_scout_bees = 40, 
+        elite_site_params = (15,20), 
+        best_site_params = (15, 10),
+        bounds = (-10,10), 
+        n_dim = 2,
+        nbhd_radius = 1.5,
+    )
+
+    # dummy functions
+    def f():
+        pass
+    
+    with pytest.raises(ValueError) as e_info:
+        sbc.optimize(rosen)
+
+    with pytest.raises(ValueError) as e_info:
+        sbc.optimize(rosen)
+
+    assert str(e_info.value) == 
+
+    #Add type check to optimixe n_iterations
