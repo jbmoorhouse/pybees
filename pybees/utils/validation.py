@@ -167,7 +167,7 @@ def check_discrete_func(func, size):
         raise TypeError("``cost_function`` should return an np.ndarray with "
             "elements of type int or float")
     elif cost.ndim != 1 or cost.size != size:
-        raise ValueError(f"Bad shape {cost.shape} . func should return "
+        raise ValueError(f"Bad shape {cost.shape}. func should return "
             "np.ndarray with shape (n_permutations,).")
 
 

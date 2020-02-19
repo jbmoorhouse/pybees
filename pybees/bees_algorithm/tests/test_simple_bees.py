@@ -313,6 +313,13 @@ def test_optimize():
     
     assert str(e_info.value) == f'Bad shape ({sbd.n_scout_bees * 2},). func ' \
         'should return np.ndarray with shape (n_permutations,).'
+
+    # Check correct shape but incorrect dimensions.
+    # int(sbd.n_scout_bees/2) is used so that the size is correct, but the 
+    # number of dimensions is incorrect.
+    with pytest.raises(ValueError) as e_info:
+        sbd.optimize(lambda x, y: np.random.randint(
+            10, size=[2, int(sbd.n_scout_bees/2)]))
     
     # continuous incorrect output shape
     # -------------------------------------------------------------------------
@@ -338,11 +345,6 @@ def test_optimize():
 
     with pytest.raises(TypeError) as e_info:
         sbc.optimize(list)
-
-    assert str(e_info.value) == '`func` return must be an np.ndarray. Detected '\
-        '[array([5, 0]), array([3, 3]), array([7, 9]), array([3, 5]), ' \
-        'array([2, 4]), array([7, 6]), array([8, 8]), array([1, 6]), ' \
-        'array([7, 7]), array([8, 1])]'
 
     # Check optimize n_iterations
     # -------------------------------------------------------------------------
