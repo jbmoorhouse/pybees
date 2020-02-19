@@ -830,16 +830,3 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
             range_x=r_x, range_y=r_y, height=height, title=title)
 
         fig.show()
-
-
-sbd = SimpleBeesDiscrete(
-    n_scout_bees = 50, 
-    elite_site_params = (15, 40), 
-    best_site_params = (15, 30), 
-    coordinates = np.random.rand(10, 4)#np_problems['Eil51']
-)
-
-def f(a, b):
-    return ""
-
-#sbd.optimize(f)
