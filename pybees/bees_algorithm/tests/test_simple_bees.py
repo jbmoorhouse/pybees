@@ -17,7 +17,7 @@ import numpy as np
 from scipy.optimize import rosen
 
 # =============================================================================
-#  SimpleBeesContinuous tests
+#  SimpleBeesContinuous and SimpleBeesDiscrete combined tests
 # =============================================================================
 
 def check_output(sbc_obj, fun, cost, coords):
@@ -213,6 +213,155 @@ def test_site_params():
     check_site_type('elite_site_params', params)
     check_site_type('best_site_params', params)
 
+def test_optimize():
+    sbc = SimpleBeesContinuous(
+        n_scout_bees = 10, 
+        elite_site_params = (4,20), 
+        best_site_params = (4, 10),
+        bounds = (-10,10), 
+        n_dim = 2,
+        nbhd_radius = 1.5,
+    )
+
+    sbd = SimpleBeesDiscrete(
+        n_scout_bees = 50, 
+        elite_site_params = (15, 40), 
+        best_site_params = (15, 30), 
+        coordinates = np.random.randint(10, size=[10, 2])
+    )
+
+    # continuous no input or output
+    # -------------------------------------------------------------------------
+
+    def f():
+        pass
+    
+    with pytest.raises(AttributeError) as e_info:
+        sbc.optimize(f)
+    
+    assert str(e_info.value) == '`func` should accept an np.ndarray with ' \
+        'shape  (dimension, n) where dimension >= 1 and n >= 1. `dimension` ' \
+        'is the number of dimensions a coordinate has and n is the number of ' \
+        'point  coordinates. `func` should return an np.ndarray with shape ' \
+        '(m,).See the examples for SimpleBeesContinuous()'
+
+    # continuous no output
+    # -------------------------------------------------------------------------
+
+    def g(x):
+        pass
+    
+    with pytest.raises(TypeError) as e_info:
+        sbc.optimize(g)
+    
+    assert str(e_info.value) == '`func` return must be an np.ndarray. ' \
+        'Detected None'
+
+    # continuous incorrect output shape
+    # -------------------------------------------------------------------------
+
+    def h(x):
+        return x
+    
+    with pytest.raises(ValueError) as e_info:
+        sbc.optimize(h)
+    
+    assert str(e_info.value) == 'Bad output shape(10, 2). `func` should ' \
+        'return an array with shape(n, ) where n is the number of point ' \
+        'coordinates. Please see the example functions. E.g. ' \
+        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
+
+
+    # discrete incorrect number of inputs 
+    # -------------------------------------------------------------------------
+
+    invalid_func_inputs = [lambda x: None, lambda x, y, z: None]
+    
+    for fu in invalid_func_inputs:
+        with pytest.raises(AttributeError) as e_info:
+            sbd.optimize(fu)
+        
+        assert str(e_info.value) == '``func`` should accept 2 parameters. ' \
+            '``bee_permutations`` should be an np.ndarray with shape ' \
+            '``(n_permutations, n_coordinates)``, which represents ' \
+            '``n_permutations`` of some ``range(coordinates)``. For example '\
+            '``np.array([0,1,2], [2,1,0])`` where ``n_permutations = 2``. ' \
+            'The second parameter, ``coordinates``, is an np.ndarray with ' \
+            'shape ``(n_coordinates, n_dimensions)``. ``func`` should return '\
+            'an np.ndarray with shape ``(n_permutations,)``. Please see ' \
+            '``combinatorial_single_obj.py`` for examples.'
+
+    # discrete incorrect output type
+    # -------------------------------------------------------------------------
+
+    with pytest.raises(TypeError) as e_info:
+        sbd.optimize(lambda x, y: "")
+    
+    assert str(e_info.value) == '``cost_function`` should return an np.ndarray'
+
+    with pytest.raises(TypeError) as e_info:
+        sbd.optimize(lambda x, y: np.array([""]))
+
+    assert str(e_info.value) =='``cost_function`` should return an ' \
+        'np.ndarray with elements of type int or float'
+
+    # discrete incorrect output shape
+    # -------------------------------------------------------------------------
+
+    with pytest.raises(ValueError) as e_info:
+        sbd.optimize(lambda x, y: np.arange(sbd.n_scout_bees * 2))
+    
+    assert str(e_info.value) == f'Bad shape ({sbd.n_scout_bees * 2},). func ' \
+        'should return np.ndarray with shape (n_permutations,).'
+    
+    # continuous incorrect output shape
+    # -------------------------------------------------------------------------
+    with pytest.raises(ValueError) as e_info:
+        sbc.optimize(rosen)
+
+    assert str(e_info.value) == 'Bad output shape(2,). `func` should ' \
+        'return an array with shape(n, ) where n is the number of point ' \
+        'coordinates. Please see the example functions. E.g. ' \
+        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
+
+    with pytest.raises(ValueError) as e_info:
+        sbc.optimize(sum)
+
+    assert str(e_info.value) == 'Bad output shape(2,). `func` should ' \
+        'return an array with shape(n, ) where n is the number of point ' \
+        'coordinates. Please see the example functions. E.g. ' \
+        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
+
+    # continuous incorrect output type
+    # -------------------------------------------------------------------------
+    np.random.seed(0)
+
+    with pytest.raises(TypeError) as e_info:
+        sbc.optimize(list)
+
+    assert str(e_info.value) == '`func` return must be an np.ndarray. Detected '\
+        '[array([5, 0]), array([3, 3]), array([7, 9]), array([3, 5]), ' \
+        'array([2, 4]), array([7, 6]), array([8, 8]), array([1, 6]), ' \
+        'array([7, 7]), array([8, 1])]'
+
+    # Check optimize n_iterations
+    # -------------------------------------------------------------------------
+    with pytest.raises(TypeError) as e_info:
+        sbc.optimize(levy, "")
+    
+    assert str(e_info.value) == '``n_iter`` must be of type ``int``'
+
+    with pytest.raises(ValueError) as e_info:
+        sbc.optimize(levy, 0)
+
+    assert str(e_info.value) == '``n_iter`` must be greater than 0'
+
+#def test_plot():
+
+# =============================================================================
+#  SimpleBeesContinuous exclusive tests
+# =============================================================================
+
 def test_bounds():
     params = dict(
         n_scout_bees = 10,
@@ -356,90 +505,6 @@ def test_strict_bounds():
         assert str(e_info.value) == 'strict_bounds must be either True or ' \
             f'False. Received {t}'
 
-def test_optimize():
-    sbc = SimpleBeesContinuous(
-        n_scout_bees = 10, 
-        elite_site_params = (4,20), 
-        best_site_params = (4, 10),
-        bounds = (-10,10), 
-        n_dim = 2,
-        nbhd_radius = 1.5,
-    )
-
-    # dummy function with no input or output
-    # -------------------------------------------------------------------------
-    def f():
-        pass
-    
-    with pytest.raises(AttributeError) as e_info:
-        sbc.optimize(f)
-    
-    assert str(e_info.value) == '`func` should accept an np.ndarray with ' \
-        'shape  (dimension, n) where dimension >= 1 and n >= 1. `dimension` ' \
-        'is the number of dimensions a coordinate has and n is the number of ' \
-        'point  coordinates. `func` should return an np.ndarray with shape ' \
-        '(m,).See the examples for SimpleBeesContinuous()'
-
-    # dummy function with correct input and incorrect output type
-    def g(x):
-        pass
-    
-    with pytest.raises(TypeError) as e_info:
-        sbc.optimize(g)
-    
-    assert str(e_info.value) == '`func` return must be an np.ndarray. ' \
-        'Detected None'
-
-    # dummy function with correct input and incorrect output shape
-    # -------------------------------------------------------------------------
-    # input == output
-
-    def h(x):
-        return x
-    
-    with pytest.raises(ValueError) as e_info:
-        sbc.optimize(h)
-    
-    assert str(e_info.value) == 'Bad output shape(10, 2). `func` should ' \
-        'return an array with shape(n, ) where n is the number of point ' \
-        'coordinates. Please see the example functions. E.g. ' \
-        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
-
-    # incorrect output shape
-    with pytest.raises(ValueError) as e_info:
-        sbc.optimize(rosen)
-
-    assert str(e_info.value) == 'Bad output shape(2,). `func` should ' \
-        'return an array with shape(n, ) where n is the number of point ' \
-        'coordinates. Please see the example functions. E.g. ' \
-        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
-
-    with pytest.raises(ValueError) as e_info:
-        sbc.optimize(sum)
-
-    assert str(e_info.value) == 'Bad output shape(2,). `func` should ' \
-        'return an array with shape(n, ) where n is the number of point ' \
-        'coordinates. Please see the example functions. E.g. ' \
-        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
-
-    # incorrect output type
-    np.random.seed(0)
-
-    with pytest.raises(TypeError) as e_info:
-        sbc.optimize(list)
-
-    assert str(e_info.value) == '`func` return must be an np.ndarray. Detected '\
-        '[array([5, 0]), array([3, 3]), array([7, 9]), array([3, 5]), ' \
-        'array([2, 4]), array([7, 6]), array([8, 8]), array([1, 6]), ' \
-        'array([7, 7]), array([8, 1])]'
-
-    # Check optimize n_iterations
-    with pytest.raises(TypeError) as e_info:
-        sbc.optimize(levy, "")
-    
-    assert str(e_info.value) == '``n_iter`` must be of type ``int``'
-
-    with pytest.raises(ValueError) as e_info:
-        sbc.optimize(levy, 0)
-
-    assert str(e_info.value) == '``n_iter`` must be greater than 0'
+# =============================================================================
+#  SimpleBeesDiscrete exclusive tests
+# =============================================================================
