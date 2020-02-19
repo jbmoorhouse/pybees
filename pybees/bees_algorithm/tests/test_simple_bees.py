@@ -24,7 +24,6 @@ def check_output(sbc_obj, fun, cost, coords):
     assert(np.allclose([res.fun], [cost]))
     assert(np.allclose([res.x], coords))
 
-
 def test_simple():
     # test levy function with 2 dimensions and 4 dimensions
     # -------------------------------------------------------------------------
@@ -170,8 +169,8 @@ def check_site_type(param_name, params):
         with pytest.raises(TypeError) as e_info:
             SimpleBeesContinuous(**params)
 
-        assert str(e_info.value) == f'{param_name} must have a value of type ' \
-            f'list or tuple. {type(t)} detected.'
+        assert str(e_info.value) == f'{param_name} must have a value of ' \
+            'type list or tuple. {type(t)} detected.'
 
     # Check the parameter element types
     for t in invalid_element_type:
