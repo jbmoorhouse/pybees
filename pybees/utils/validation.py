@@ -208,3 +208,13 @@ def check_continuous_func(func, n_dim):
                          "coordinates. Please see the example functions. E.g. "
                          "func(np.random.randint(10, size = [10, 5])) should "
                          "return shape(10,).")
+
+def check_iterations(n_iter):
+    """Check n_iter input"""
+
+    if not isinstance(n_iter, int):
+        raise TypeError('``n_iter`` must be of type ``int``.')
+    elif n_iter < 1:
+        raise ValueError('``n_iter`` must be greater than 1.')
+
+    return n_iter
