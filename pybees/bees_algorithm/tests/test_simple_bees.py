@@ -2,7 +2,8 @@ from pybees.utils.continuous_single_obj import (
     levy, 
     ackley, 
     drop_wave, 
-    michalewicz
+    michalewicz,
+    easom
 )
 
 from pybees.utils.combinatorial_single_obj import tour_distance
@@ -19,7 +20,7 @@ import numpy as np
 # =============================================================================
 
 def check_output(sbc_obj, fun, cost, coords):
-    res = sbc_obj.optimize(fun, 300)
+    res = sbc_obj.optimize(fun, 400)
 
     assert(np.allclose([res.fun], [cost]))
     assert(np.allclose([res.x], coords))
@@ -47,7 +48,7 @@ def test_simple():
     )
 
     check_output(sbc_levy_2, levy, 0, [1, 1])
-    check_output(sbc_levy_4, levy, 0, [1,1,1,1])
+    check_output(sbc_levy_4, levy, 0, [1, 1, 1, 1])
 
     # test drop_wave, michalewicz function with 2 dimensions only
     # -------------------------------------------------------------------------
@@ -69,11 +70,21 @@ def test_simple():
         n_dim = 2,
         nbhd_radius = 1,
     )
+
+    sbc_easom = SimpleBeesContinuous(
+        n_scout_bees = 50, 
+        elite_site_params = (15, 30), 
+        best_site_params = (15, 20),
+        bounds = (-100, 100), 
+        n_dim = 2,
+        nbhd_radius = 10,
+    )
     
     check_output(sbc_drop_wave, drop_wave , -1, [0, 0])
-    check_output(sbc_michalewicz_2, michalewicz, -1.8013, [2.20, 1.57])
+    check_output(sbc_michalewicz_2, michalewicz, -1.8013, [2.2029, 1.5708])
+    check_output(sbc_easom, easom, -1, [np.pi, np.pi])
 
-    # test ackley function with 7 dimensions
+    # test ackley function with 6 dimensions
     # -------------------------------------------------------------------------
     
     sbc_ackley_7 = SimpleBeesContinuous(
@@ -81,12 +92,11 @@ def test_simple():
         elite_site_params = (40,100), 
         best_site_params = (30,60),
         bounds = (-32.768, 32.768),
-        n_dim = 7,
+        n_dim = 6,
         nbhd_radius = 7
     )
 
-    check_output(sbc_ackley_7, ackley, 0, [0, 0])
-
+    check_output(sbc_ackley_7, ackley, 0, [0, 0, 0, 0, 0, 0])
 
 def test_n_scout_bees():
     params = dict(
@@ -170,7 +180,7 @@ def check_site_type(param_name, params):
             SimpleBeesContinuous(**params)
 
         assert str(e_info.value) == f'{param_name} must have a value of ' \
-            'type list or tuple. {type(t)} detected.'
+            f'type list or tuple. {type(t)} detected.'
 
     # Check the parameter element types
     for t in invalid_element_type:
@@ -250,3 +260,29 @@ def test_bounds():
     assert str(w_info[0].message.args[0]) == 'Detected bounds = (10, 10). ' \
         'Consider changing bounds so that the upper bound is greater than ' \
         'the lower bound'
+
+def test_n_dim():
+    params = dict(
+        n_scout_bees = 10,
+        bounds = (-10, 10),
+        nbhd_radius = 1.5, 
+        elite_site_params = (4, 20),
+        best_site_params = (4, 20),   
+    )
+
+    # Check types
+    invalid_types = ["", 1.0, [], ()]
+
+    for t in invalid_types:
+        with pytest.raises(TypeError) as e_info:
+            SimpleBeesContinuous(n_dim = t, **params)
+
+        assert str(e_info.value) == 'n_dim must be of type int'
+
+
+    # Check values
+    with pytest.raises(ValueError) as e_info:
+        SimpleBeesContinuous(n_dim = 0, **params)
+
+        assert str(e_info.value) == 'n_dim must be greater than 1'
+
