@@ -695,7 +695,7 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
 
         # Check the discrete cost function accepts and returns the correct
         # data types and shapes
-        check_discrete_func(func)
+        check_discrete_func(func, self.n_scout_bees)
         
         # Check n_iter input is correct
         n_iter = check_iterations(n_iter)
@@ -827,6 +827,19 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
                              range_z=r_z,  height=height, title=title)
         else:
             fig = px.line(df, x=xi[0], y=xi[1], animation_frame='n_iter',
-                          range_x=r_x, range_y=r_y, height=height, title=title)
+            range_x=r_x, range_y=r_y, height=height, title=title)
 
         fig.show()
+
+
+sbd = SimpleBeesDiscrete(
+    n_scout_bees = 50, 
+    elite_site_params = (15, 40), 
+    best_site_params = (15, 30), 
+    coordinates = np.random.rand(10, 4)#np_problems['Eil51']
+)
+
+def f(a, b):
+    return ""
+
+#sbd.optimize(f)
