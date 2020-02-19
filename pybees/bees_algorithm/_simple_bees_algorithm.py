@@ -19,7 +19,8 @@ from pybees.utils.combinatorial_single_obj import tour_distance
 from pybees.utils.validation import (
     check_coordinate_array,
     check_discrete_func,
-    check_continuous_func
+    check_continuous_func,
+    check_iterations
 )
 
 from tqdm import trange
@@ -284,7 +285,7 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
     # ----------------------------------------------------------------------
     # Public methods
 
-    def optimize(self, func, n_iterations=100):
+    def optimize(self, func, n_iter=100):
         """Find the global minimum of a function using the bees algorithm
 
         Parameters
@@ -294,7 +295,7 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
             shape(n_coordinates, n_dim) and return a np.ndarray with shape
             (n_coordinates,)
 
-        n_iterations : int, default = 100
+        n_iter : int, default = 100
             Number of optimisation steps 
 
         Returns
@@ -342,13 +343,15 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
         # data types and shapes
         check_continuous_func(func, self.n_dim)
 
+        if not isinstance( N_)
+
         # Begin the initial global search with scout bees
         scout_sorted = self._initial_scout_search(func)
         self.history = scout_sorted.copy()
 
         nbhd = self.nbhd_radius
 
-        with trange(n_iterations) as pbar:
+        with trange(n_iter) as pbar:
             for _ in pbar:
                 # Get the curarent best cost
                 pbar.set_postfix(cost=scout_sorted[0, -1])
@@ -372,7 +375,7 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
 
         res.x = scout_sorted[0, :-1]
         res.fun = scout_sorted[0, -1]
-        res.nit = n_iterations
+        res.nit = n_iter
 
         return res
 
@@ -626,7 +629,7 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
     # ----------------------------------------------------------------------
     # Public methods
 
-    def optimize(self, func, n_iterations=100):
+    def optimize(self, func, n_iter=100):
         """Find the global minimum of a function using the bees algorithm
 
         Parameters
@@ -638,7 +641,7 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
             ``coordinates`` must be an np.ndarray with 
             shape(n_coordinates, n_dim). Please see the example below.
 
-        n_iterations : int, default = 100
+        n_iter : int, default = 100
             Number of optimisation steps 
 
         Returns
@@ -696,7 +699,7 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
         scout_sorted = self._initial_scout_search(func)
         self.history = scout_sorted.copy()[:1]
 
-        with trange(n_iterations) as pbar:
+        with trange(n_iter) as pbar:
             for _ in pbar:
                 # Get the curarent best cost
                 pbar.set_postfix(cost=scout_sorted[0, -1])
@@ -718,7 +721,7 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
         res.x = scout_sorted[0, :-1]
         res.coordinates = self.coordinates[scout_sorted[0, :-1].astype(int)]
         res.fun = scout_sorted[0, -1]
-        res.nit = n_iterations
+        res.nit = n_iter
 
         return res
 
