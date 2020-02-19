@@ -113,7 +113,7 @@ def check_coordinate_array(coordinates):
 # User defined function checking
 # =============================================================================
 
-def check_discrete_func(func):
+def check_discrete_func(func, size):
     """Combinatorial cost function validation function
     
     The input function is checked with a valid input and it's output is 
@@ -147,21 +147,28 @@ def check_discrete_func(func):
     """
     try:
         arr = np.random.randint(0, 10, [10, 2])
-        permutations = np.random.rand(3, arr.shape[0]).argsort(1)
+        permutations = np.random.rand(size, arr.shape[0]).argsort(1)
         
         cost = func(permutations, arr)
     except:
-        raise AttributeError("`func` should accept an np.ndarray with shape  "
-                             "(m, n) where m >= 3 and n >= 2. The function "
-                             "should return an np.ndarray with shape (m,). "
-                             "See the examples for SimpleBeesDiscrete()")
+        raise AttributeError('``func`` should accept 2 parameters. ' 
+            '``bee_permutations`` should be an np.ndarray with shape ' 
+            '``(n_permutations, n_coordinates)``, which represents ' 
+            '``n_permutations`` of some ``range(coordinates)``. For example '
+            '``np.array([0,1,2], [2,1,0])`` where ``n_permutations = 2``. '
+            'The second parameter, ``coordinates``, is an np.ndarray with '
+            'shape ``(n_coordinates, n_dimensions)``. ``func`` should return '
+            'an np.ndarray with shape ``(n_permutations,)``. Please see '
+            '``combinatorial_single_obj.py`` for examples.')
 
     if not isinstance(cost, np.ndarray):
-        raise TypeError("`cost_function` should return an np.ndarray")
-    elif cost.ndim != 1 or cost.size != permutations.shape[0]:
-        raise ValueError(f"Bad shape {cost.shape} . func should return np.ndarray "
-                         f"with shape ({permutations.shape[0]},) but detected "
-                         f"shape {cost.shape}")
+        raise TypeError("``cost_function`` should return an np.ndarray")
+    elif cost.dtype.kind not in "fi":
+        raise TypeError("``cost_function`` should return an np.ndarray with "
+            "elements of type int or float")
+    elif cost.ndim != 1 or cost.size != size:
+        raise ValueError(f"Bad shape {cost.shape} . func should return "
+            "np.ndarray with shape (n_permutations,).")
 
 
 def check_continuous_func(func, n_dim):
