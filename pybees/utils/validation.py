@@ -119,7 +119,7 @@ def check_iterations(n_iter):
     return n_iter
 
 def check_plot_history(optimiation_object):
-    if not hasattr(obj, "history"):
+    if not hasattr(optimiation_object, "history"):
         raise AttributeError("No data detected. Please execute self.optimize")
 
 # =============================================================================
