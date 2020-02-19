@@ -108,6 +108,19 @@ def check_coordinate_array(coordinates):
     
     return coordinates
 
+def check_iterations(n_iter):
+    """Check n_iter input"""
+
+    if not isinstance(n_iter, int):
+        raise TypeError('``n_iter`` must be of type ``int``')
+    elif n_iter < 1:
+        raise ValueError('``n_iter`` must be greater than 0')
+
+    return n_iter
+
+def check_plot_history(optimiation_object):
+    if not hasattr(obj, "history"):
+        raise AttributeError("No data detected. Please execute self.optimize")
 
 # =============================================================================
 # User defined function checking
@@ -216,12 +229,4 @@ def check_continuous_func(func, n_dim):
                          "func(np.random.randint(10, size = [10, 5])) should "
                          "return shape(10,).")
 
-def check_iterations(n_iter):
-    """Check n_iter input"""
 
-    if not isinstance(n_iter, int):
-        raise TypeError('``n_iter`` must be of type ``int``')
-    elif n_iter < 1:
-        raise ValueError('``n_iter`` must be greater than 0')
-
-    return n_iter
