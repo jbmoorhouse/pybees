@@ -424,7 +424,7 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
 
         # Check pad type and value
         if not isinstance(pad, (int, float)):
-            raise ValueError(f"Bad type {type(pad)}. Must be int or float")
+            raise TypeError(f"Bad type {type(pad)}. Must be int or float")
         elif pad < 0:
             raise ValueError(f"Bad size {pad}, pad must be greater than 0.")
 
