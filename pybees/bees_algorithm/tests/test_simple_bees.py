@@ -433,4 +433,13 @@ def test_optimize():
         'array([2, 4]), array([7, 6]), array([8, 8]), array([1, 6]), ' \
         'array([7, 7]), array([8, 1])]'
 
-    #Add type check to optimixe n_iterations
+    # Check optimize n_iterations
+    with pytest.raises(TypeError) as e_info:
+        sbc.optimize(levy, "")
+    
+    assert str(e_info.value) == '``n_iter`` must be of type ``int``'
+
+    with pytest.raises(ValueError) as e_info:
+        sbc.optimize(levy, 0)
+
+    assert str(e_info.value) == '``n_iter`` must be greater than 0'
