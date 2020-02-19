@@ -365,21 +365,59 @@ def test_plot():
         best_site_params = (4, 10),
         bounds = (-10,10), 
         n_dim = 2,
-        nbhd_radius = 1.5,
-    )
+        nbhd_radius = 1.5)
 
     sbd = SimpleBeesDiscrete(
         n_scout_bees = 50, 
         elite_site_params = (15, 40), 
         best_site_params = (15, 30), 
-        coordinates = np.random.randint(10, size=[10, 2])
-    )
+        coordinates = np.random.randint(10, size=[10, 2]))
+
+    # Test that optimize has been executed
+    # -------------------------------------------------------------------------
 
     with pytest.raises(AttributeError) as e_info:
         sbc.plot()
 
-    assert str(e_info.value) == 'No data detected. Please execute use the ' \
-        'optimise method'
+    assert str(e_info.value) =='No data detected. Please execute self.optimize'
+
+    with pytest.raises(AttributeError) as e_info:
+        sbd.plot()
+
+    assert str(e_info.value) =='No data detected. Please execute self.optimize'
+
+    # Continuous check global_min in plot
+    # -------------------------------------------------------------------------
+
+    sbc.optimize(levy)
+    
+    invalid_types = [[], {}, ""]
+
+    for t in invalid_types:
+        with pytest.raises(TypeError) as e_info:
+            sbc.plot(global_min = t)
+
+    invalid_length = [(0,), (0, 0, 0)]
+
+    for l in invalid_length:
+        with pytest.raises(ValueError) as e_info:
+            sbc.plot(global_min = l)
+
+    invalid_element_types = [("", 0), (0, "")]
+        
+    for e in invalid_element_types:
+        with pytest.raises(TypeError) as e_info:
+            sbc.plot(global_min = e)
+
+    # Continuous check pad in plot
+    # -------------------------------------------------------------------------
+
+    for t in invalid_types:
+        with pytest.raises(TypeError) as e_info:
+            sbc.plot(pad = t)
+
+    with pytest.raises(ValueError) as e_info:
+        sbc.plot(pad = -0.1)
 
 # =============================================================================
 #  SimpleBeesContinuous exclusive tests
