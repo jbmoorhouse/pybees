@@ -343,7 +343,8 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
         # data types and shapes
         check_continuous_func(func, self.n_dim)
 
-        if not isinstance( N_)
+        # Check n_iter input is correct
+        n_iter = check_iterations(n_iter)
 
         # Begin the initial global search with scout bees
         scout_sorted = self._initial_scout_search(func)
@@ -695,6 +696,9 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
         # Check the discrete cost function accepts and returns the correct
         # data types and shapes
         check_discrete_func(func)
+        
+        # Check n_iter input is correct
+        n_iter = check_iterations(n_iter)
 
         scout_sorted = self._initial_scout_search(func)
         self.history = scout_sorted.copy()[:1]
