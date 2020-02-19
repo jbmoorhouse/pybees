@@ -213,8 +213,8 @@ def check_iterations(n_iter):
     """Check n_iter input"""
 
     if not isinstance(n_iter, int):
-        raise TypeError('``n_iter`` must be of type ``int``.')
+        raise TypeError('``n_iter`` must be of type ``int``')
     elif n_iter < 1:
-        raise ValueError('``n_iter`` must be greater than 1.')
+        raise ValueError('``n_iter`` must be greater than 0')
 
     return n_iter
