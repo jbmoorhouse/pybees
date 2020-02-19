@@ -20,7 +20,8 @@ from pybees.utils.validation import (
     check_coordinate_array,
     check_discrete_func,
     check_continuous_func,
-    check_iterations
+    check_iterations,
+    check_plot_history
 )
 
 from tqdm import trange
@@ -380,7 +381,7 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
 
         return res
 
-    def plot(self, global_min=None, pad=5):
+    def plot(self, global_min=(0,0), pad=5):
         """Track the bee position 
 
         The history of the bees position is tracked and plotted.
@@ -407,9 +408,7 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
         """
 
         # Determine if optimize has been executed
-        if not hasattr(self, "history"):
-            raise AttributeError("No data detected. Please execute "
-                                 "use the optimise method")
+        check_plot_history(self)
 
         # Check global_min is the correct shape and size
         if not isinstance(global_min, tuple):
@@ -775,9 +774,8 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
         >>> sbd.plot()
         """
         
-        if not hasattr(self, "history"):
-            raise AttributeError("No data detected. Please execute "
-                                 "self.optimise")
+        # Determine if optimize has been executed
+        check_plot_history(self)
 
         # Define abbreviated useful data
         c = self.coordinates

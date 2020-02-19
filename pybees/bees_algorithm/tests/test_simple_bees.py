@@ -358,7 +358,28 @@ def test_optimize():
 
     assert str(e_info.value) == '``n_iter`` must be greater than 0'
 
-#def test_plot():
+def test_plot():
+    sbc = SimpleBeesContinuous(
+        n_scout_bees = 10, 
+        elite_site_params = (4,20), 
+        best_site_params = (4, 10),
+        bounds = (-10,10), 
+        n_dim = 2,
+        nbhd_radius = 1.5,
+    )
+
+    sbd = SimpleBeesDiscrete(
+        n_scout_bees = 50, 
+        elite_site_params = (15, 40), 
+        best_site_params = (15, 30), 
+        coordinates = np.random.randint(10, size=[10, 2])
+    )
+
+    with pytest.raises(AttributeError) as e_info:
+        sbc.plot()
+
+    assert str(e_info.value) == 'No data detected. Please execute use the ' \
+        'optimise method'
 
 # =============================================================================
 #  SimpleBeesContinuous exclusive tests
