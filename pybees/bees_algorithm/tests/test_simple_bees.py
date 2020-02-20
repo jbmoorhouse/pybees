@@ -20,7 +20,7 @@ from scipy.optimize import rosen
 
 
 # =============================================================================
-#  Complete examples
+#  Complete examples and parameter lists
 # =============================================================================
 
 SBC = SimpleBeesContinuous(
@@ -36,6 +36,13 @@ SBD = SimpleBeesDiscrete(
     elite_site_params = (15, 40), 
     best_site_params = (15, 30), 
     coordinates = np.random.randint(10, size=[10, 2]))
+
+
+SBD_PARAMS = dict(n_scout_bees = 50, 
+    elite_site_params = (15, 40), 
+    best_site_params = (15, 30), 
+    coordinates = np.random.randint(10, size=[10, 2])
+)
 
 # =============================================================================
 #  SimpleBeesContinuous and SimpleBeesDiscrete combined tests
@@ -561,35 +568,32 @@ def test_strict_bounds():
 #  SimpleBeesDiscrete exclusive tests
 # =============================================================================
 
-# Need to test that global search keys are valid and in GLOBAL_SEARCH
 def test_global_search():
     global_search_keys = [k for k in GLOBAL_SEARCH]
 
     for key in global_search_keys:
         try:
-            SimpleBeesDiscrete(
-                n_scout_bees = 50, 
-                elite_site_params = (15, 40), 
-                best_site_params = (15, 30), 
-                coordinates = np.random.randint(10, size=[10, 2]),
-                global_search = key)
+            SimpleBeesDiscrete(**SBD_PARAMS, global_search = key)
         except ValueError:
             pytest.fail('Invalid global search method')
+
+    invalid_types = [1.0, "", []]
+
+    for t in invalid_types:
+        with pytest.raises(TypeError):
+            SimpleBeesDiscrete(**SBD_PARAMS, global_search= t)
 
 def test_local_search():
     local_search_keys = [k for k in LOCAL_SEARCH]
 
     for key in local_search_keys:
         try:
-            SimpleBeesDiscrete(
-                n_scout_bees = 50, 
-                elite_site_params = (15, 40), 
-                best_site_params = (15, 30), 
-                coordinates = np.random.randint(10, size=[10, 2]),
-                local_search = key)
+            SimpleBeesDiscrete(**SBD_PARAMS, local_search = key)
         except ValueError:
             pytest.fail('Invalid local search method')
 
+    invalid_types = [1.0, "", []]
 
-
-
+    for t in invalid_types:
+        with pytest.raises(TypeError):
+            SimpleBeesDiscrete(**SBD_PARAMS, local_search = t)
