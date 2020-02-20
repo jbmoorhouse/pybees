@@ -8,7 +8,7 @@ algorithm for continuous optimization problems.
 # License: BSD 3 clause
 
 import numpy as np 
-from pybees.utils.validation import check_shape
+from pybees.utils.validation import check_input_array
 
 __all__ = ['levy', 'ackley', 'drop_wave', 'de_jong', 'easom', 'michalewicz']
 
@@ -60,7 +60,7 @@ def levy(x):
            9.55739901e+00, 3.25729367e+01, 1.99433481e+01, 2.01038861e+01,
            1.51250000e+01, 1.25573990e+01])
     """    
-    x = check_shape(x)
+    x = check_input_array(x)
 
     w = 1 + (x - 1) / 4
 
@@ -121,7 +121,7 @@ def ackley(x, a = 20, b = 0.2, c = 2 * PI):
            12.56809083, 15.88518678])
     """
 
-    x = check_shape(x)
+    x = check_input_array(x)
     d = x.shape[1]
         
     sum_one = np.sum(x ** 2, axis=1)
@@ -171,7 +171,7 @@ def drop_wave(x):
            -4.74197545e-02, -3.48880956e-02, -3.59855661e-02, 
            -6.39818116e-02])
     """
-    x = check_shape(x, two_dim=True)          
+    x = check_input_array(x, two_dim=True)          
     
     frac_one = 1 + np.cos(12 * ((x[:,0] ** 2 + x[:,1] ** 2) ** 0.5))
     frac_two = 0.5 * (x[:,0] ** 2 + x[:,1] ** 2) + 2
@@ -219,7 +219,7 @@ def de_jong(x):
            453.01047735, 497.42359525])
     """
 
-    x = check_shape(x, two_dim=True)
+    x = check_input_array(x, two_dim=True)
         
     a = np.array([-32,-16,0,16,32])
     a_one = np.repeat(np.tile(a, 5)[np.newaxis, :], x.shape[0], axis=0)
@@ -272,7 +272,7 @@ def easom(x):
             1.59876227e-083]),
     """
 
-    x = check_shape(x, two_dim=True)
+    x = check_input_array(x, two_dim=True)
     
     term_one = -(np.cos(x[:, 0]) * np.cos(x[:, 1]))
     term_two = np.exp(-(x[:,0] - PI) ** 2 - (x[:, 1] - PI) ** 2)
@@ -319,7 +319,7 @@ def michalewicz(x, m=10):
             2.55667732e-05]),
     """
     
-    x = check_shape(x)
+    x = check_input_array(x)
     
     i = np.arange(1, x.shape[1] + 1)
     return - np.sum(np.sin(x) * np.sin(((i*x**2) / PI)) ** (2*m), axis=1)

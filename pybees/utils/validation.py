@@ -8,14 +8,18 @@ This module gathers a range of utility functions.
 
 import numpy as np
 
-from sklearn.utils.validation import assert_all_finite, check_array
+from sklearn.utils.validation import assert_all_finite
 
 # =============================================================================
 # Continuous cost functions
 # =============================================================================
 
-def check_shape(x, two_dim=False):
-    if x.size = 0:
+def check_input_array(x, two_dim=False):
+    if not isinstance(x, np.ndarray):
+        raise TypeError(f"Bad {type(x)!r}. Must pass a np.ndarray")
+    elif x.dtype.kind not in "fi":
+        raise TypeError(f"Bad {x.dtype!r}. Must contain either ints or floats")
+    elif x.size == 0:
         raise ValueError(f"Bad shape{x.shape}")
 
     x = x[np.newaxis, :] if x.ndim == 1 else x
