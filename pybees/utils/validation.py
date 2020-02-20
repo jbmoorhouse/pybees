@@ -7,28 +7,44 @@ This module gathers a range of utility functions.
 # License: BSD 3 clause
 
 import numpy as np
-
 from sklearn.utils.validation import assert_all_finite
+
+__all__ = [
+    'check_input_array', 
+    'check_coordinate_array', 
+    'check_iterations',
+    'check_plot_history',
+    'check_discrete_func',
+    'check_continuous_func'
+]
 
 # =============================================================================
 # Continuous cost functions
 # =============================================================================
 
 def check_input_array(x, two_dim=False):
+
+    # Check type, element types and minimum size
     if not isinstance(x, np.ndarray):
         raise TypeError(f"Bad {type(x)!r}. Must pass a np.ndarray")
     elif x.dtype.kind not in "fi":
         raise TypeError(f"Bad {x.dtype!r}. Must contain either ints or floats")
     elif x.size == 0:
-        raise ValueError(f"Bad shape{x.shape}")
+        raise ValueError(f"Bad shape {x.shape}")
 
-    x = x[np.newaxis, :] if x.ndim == 1 else x
+    # x must have either 1 or 2 dimensions. If 1, then reshape.
+    if x.ndim > 2:
+        raise ValueError(f"Bad shape {x.shape}. Must have 1-2 dimensions")
+    elif x.ndim == 1:
+        x = x[np.newaxis, :] 
 
+    # If the function check_input_array is passed to requires 2 dimensions,
+    # Ensure that the input array has the correct shape
     if two_dim:
         if x.shape[1] != 2:
             raise ValueError(f"Bad shape {x.shape}. ``x`` must have "
                             "shape(n_coordinates, 2). Try "
-                            f"shape({x.shape[0]}, 2)")
+                            f"shape ({x.shape[0]}, 2)")
 
     return x
 
@@ -230,7 +246,7 @@ def check_continuous_func(func, n_dim):
         raise TypeError(f"`func` return must be an np.ndarray. Detected {cost}")
         
     elif cost.ndim != 1 or cost.size != x.shape[0]:
-        raise ValueError(f"Bad output shape{cost.shape}. `func` should return " 
+        raise ValueError(f"Bad output shape {cost.shape}. `func` should return " 
                          "an array with shape(n, ) where n is the number of point "
                          "coordinates. Please see the example functions. E.g. "
                          "func(np.random.randint(10, size = [10, 5])) should "
