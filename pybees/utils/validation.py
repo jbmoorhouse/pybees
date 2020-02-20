@@ -8,6 +8,9 @@ This module gathers a range of utility functions.
 
 import numpy as np
 from sklearn.utils.validation import assert_all_finite
+import inspect
+
+from pybees.bees_algorithm._base import BaseBeesAlgorithm
 
 __all__ = [
     'check_input_array', 
@@ -19,7 +22,7 @@ __all__ = [
 ]
 
 # =============================================================================
-# Continuous cost functions
+# Input checking
 # =============================================================================
 
 def check_input_array(x, two_dim=False):
@@ -47,10 +50,6 @@ def check_input_array(x, two_dim=False):
                             f"shape ({x.shape[0]}, 2)")
 
     return x
-
-# =============================================================================
-# Input checking
-# =============================================================================
 
 def check_coordinate_array(coordinates):
     """Input validation on np.ndarray for combinatorial optimization problems.
@@ -142,7 +141,13 @@ def check_iterations(n_iter):
     return n_iter
 
 def check_plot_history(optimiation_object):
-    if not hasattr(optimiation_object, "history"):
+    """Check the optimisation object before plotting"""
+
+    if not issubclass(type(optimiation_object), BaseBeesAlgorithm):
+        raise TypeError("``optimiation_object`` must be a subclass of "
+                        "BaseBeesAlgorithm. Detected "
+                        f"{type(optimiation_object)}")
+    elif not hasattr(optimiation_object, "history"):
         raise AttributeError("No data detected. Please execute self.optimize")
 
 # =============================================================================
