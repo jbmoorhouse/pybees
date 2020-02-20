@@ -9,12 +9,33 @@ from pybees.utils.continuous_single_obj import (
 from pybees.utils.combinatorial_single_obj import tour_distance
 from pybees.bees_algorithm._simple_bees_algorithm import (
     SimpleBeesContinuous, 
-    SimpleBeesDiscrete
+    SimpleBeesDiscrete,
+    GLOBAL_SEARCH,
+    LOCAL_SEARCH
 )
 
 import pytest
 import numpy as np
 from scipy.optimize import rosen
+
+
+# =============================================================================
+#  Complete examples
+# =============================================================================
+
+SBC = SimpleBeesContinuous(
+    n_scout_bees = 10, 
+    elite_site_params = (4,20), 
+    best_site_params = (4, 10),
+    bounds = (-10,10), 
+    n_dim = 2,
+    nbhd_radius = 1.5)
+
+SBD = SimpleBeesDiscrete(
+    n_scout_bees = 50, 
+    elite_site_params = (15, 40), 
+    best_site_params = (15, 30), 
+    coordinates = np.random.randint(10, size=[10, 2]))
 
 # =============================================================================
 #  SimpleBeesContinuous and SimpleBeesDiscrete combined tests
@@ -54,7 +75,7 @@ def test_simple():
     # test drop_wave, michalewicz function with 2 dimensions only
     # -------------------------------------------------------------------------
 
-    sbc_drop_wave = SimpleBeesContinuous(
+    sbc_drop_wave_2 = SimpleBeesContinuous(
         n_scout_bees = 30, 
         elite_site_params = (10, 40), 
         best_site_params = (10, 30),
@@ -72,7 +93,7 @@ def test_simple():
         nbhd_radius = 1,
     )
 
-    sbc_easom = SimpleBeesContinuous(
+    sbc_easom_2 = SimpleBeesContinuous(
         n_scout_bees = 50, 
         elite_site_params = (15, 30), 
         best_site_params = (15, 20),
@@ -81,9 +102,9 @@ def test_simple():
         nbhd_radius = 10,
     )
     
-    check_output(sbc_drop_wave, drop_wave , -1, [0, 0])
+    check_output(sbc_drop_wave_2, drop_wave , -1, [0, 0])
     check_output(sbc_michalewicz_2, michalewicz, -1.8013, [2.2029, 1.5708])
-    check_output(sbc_easom, easom, -1, [np.pi, np.pi])
+    check_output(sbc_easom_2, easom, -1, [np.pi, np.pi])
 
     # test ackley function with 6 dimensions
     # -------------------------------------------------------------------------
@@ -214,22 +235,6 @@ def test_site_params():
     check_site_type('best_site_params', params)
 
 def test_optimize():
-    sbc = SimpleBeesContinuous(
-        n_scout_bees = 10, 
-        elite_site_params = (4,20), 
-        best_site_params = (4, 10),
-        bounds = (-10,10), 
-        n_dim = 2,
-        nbhd_radius = 1.5,
-    )
-
-    sbd = SimpleBeesDiscrete(
-        n_scout_bees = 50, 
-        elite_site_params = (15, 40), 
-        best_site_params = (15, 30), 
-        coordinates = np.random.randint(10, size=[10, 2])
-    )
-
     # continuous no input or output
     # -------------------------------------------------------------------------
 
@@ -237,7 +242,7 @@ def test_optimize():
         pass
     
     with pytest.raises(AttributeError) as e_info:
-        sbc.optimize(f)
+        SBC.optimize(f)
     
     assert str(e_info.value) == '`func` should accept an np.ndarray with ' \
         'shape  (dimension, n) where dimension >= 1 and n >= 1. `dimension` ' \
@@ -252,7 +257,7 @@ def test_optimize():
         pass
     
     with pytest.raises(TypeError) as e_info:
-        sbc.optimize(g)
+        SBC.optimize(g)
     
     assert str(e_info.value) == '`func` return must be an np.ndarray. ' \
         'Detected None'
@@ -264,7 +269,7 @@ def test_optimize():
         return x
     
     with pytest.raises(ValueError) as e_info:
-        sbc.optimize(h)
+        SBC.optimize(h)
     
     assert str(e_info.value) == 'Bad output shape(10, 2). `func` should ' \
         'return an array with shape(n, ) where n is the number of point ' \
@@ -279,7 +284,7 @@ def test_optimize():
     
     for fu in invalid_func_inputs:
         with pytest.raises(AttributeError) as e_info:
-            sbd.optimize(fu)
+            SBD.optimize(fu)
         
         assert str(e_info.value) == '``func`` should accept 2 parameters. ' \
             '``bee_permutations`` should be an np.ndarray with shape ' \
@@ -295,12 +300,12 @@ def test_optimize():
     # -------------------------------------------------------------------------
 
     with pytest.raises(TypeError) as e_info:
-        sbd.optimize(lambda x, y: "")
+        SBD.optimize(lambda x, y: "")
     
     assert str(e_info.value) == '``cost_function`` should return an np.ndarray'
 
     with pytest.raises(TypeError) as e_info:
-        sbd.optimize(lambda x, y: np.array([""]))
+        SBD.optimize(lambda x, y: np.array([""]))
 
     assert str(e_info.value) =='``cost_function`` should return an ' \
         'np.ndarray with elements of type int or float'
@@ -309,7 +314,7 @@ def test_optimize():
     # -------------------------------------------------------------------------
 
     with pytest.raises(ValueError) as e_info:
-        sbd.optimize(lambda x, y: np.arange(sbd.n_scout_bees * 2))
+        SBD.optimize(lambda x, y: np.arange(sbd.n_scout_bees * 2))
     
     assert str(e_info.value) == f'Bad shape ({sbd.n_scout_bees * 2},). func ' \
         'should return np.ndarray with shape (n_permutations,).'
@@ -332,7 +337,7 @@ def test_optimize():
         'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
 
     with pytest.raises(ValueError) as e_info:
-        sbc.optimize(sum)
+        SBC.optimize(sum)
 
     assert str(e_info.value) == 'Bad output shape(2,). `func` should ' \
         'return an array with shape(n, ) where n is the number of point ' \
@@ -344,80 +349,66 @@ def test_optimize():
     np.random.seed(0)
 
     with pytest.raises(TypeError) as e_info:
-        sbc.optimize(list)
+        SBC.optimize(list)
 
     # Check optimize n_iterations
     # -------------------------------------------------------------------------
     with pytest.raises(TypeError) as e_info:
-        sbc.optimize(levy, "")
+        SBC.optimize(levy, "")
     
     assert str(e_info.value) == '``n_iter`` must be of type ``int``'
 
     with pytest.raises(ValueError) as e_info:
-        sbc.optimize(levy, 0)
+        SBC.optimize(levy, 0)
 
     assert str(e_info.value) == '``n_iter`` must be greater than 0'
 
 def test_plot():
-    sbc = SimpleBeesContinuous(
-        n_scout_bees = 10, 
-        elite_site_params = (4,20), 
-        best_site_params = (4, 10),
-        bounds = (-10,10), 
-        n_dim = 2,
-        nbhd_radius = 1.5)
-
-    sbd = SimpleBeesDiscrete(
-        n_scout_bees = 50, 
-        elite_site_params = (15, 40), 
-        best_site_params = (15, 30), 
-        coordinates = np.random.randint(10, size=[10, 2]))
-
     # Test that optimize has been executed
     # -------------------------------------------------------------------------
 
     with pytest.raises(AttributeError) as e_info:
-        sbc.plot()
+        SBC.plot()
 
     assert str(e_info.value) =='No data detected. Please execute self.optimize'
 
     with pytest.raises(AttributeError) as e_info:
-        sbd.plot()
+        SBD.plot()
 
     assert str(e_info.value) =='No data detected. Please execute self.optimize'
 
     # Continuous check global_min in plot
     # -------------------------------------------------------------------------
 
-    sbc.optimize(levy)
+    SBC.optimize(levy)
     
     invalid_types = [[], {}, ""]
 
     for t in invalid_types:
         with pytest.raises(TypeError) as e_info:
-            sbc.plot(global_min = t)
+            SBC.plot(global_min = t)
 
     invalid_length = [(0,), (0, 0, 0)]
 
     for l in invalid_length:
         with pytest.raises(ValueError) as e_info:
-            sbc.plot(global_min = l)
+            SBC.plot(global_min = l)
 
     invalid_element_types = [("", 0), (0, "")]
         
     for e in invalid_element_types:
         with pytest.raises(TypeError) as e_info:
-            sbc.plot(global_min = e)
+            SBC.plot(global_min = e)
 
     # Continuous check pad in plot
     # -------------------------------------------------------------------------
 
     for t in invalid_types:
         with pytest.raises(TypeError) as e_info:
-            sbc.plot(pad = t)
+            SBC.plot(pad = t)
 
     with pytest.raises(ValueError) as e_info:
-        sbc.plot(pad = -0.1)
+        SBC.plot(pad = -0.1)
 
 # =============================================================================
 #  SimpleBeesContinuous exclusive tests
@@ -569,3 +560,36 @@ def test_strict_bounds():
 # =============================================================================
 #  SimpleBeesDiscrete exclusive tests
 # =============================================================================
+
+# Need to test that global search keys are valid and in GLOBAL_SEARCH
+def test_global_search():
+    global_search_keys = [k for k in GLOBAL_SEARCH]
+
+    for key in global_search_keys:
+        try:
+            SimpleBeesDiscrete(
+                n_scout_bees = 50, 
+                elite_site_params = (15, 40), 
+                best_site_params = (15, 30), 
+                coordinates = np.random.randint(10, size=[10, 2]),
+                global_search = key)
+        except ValueError:
+            pytest.fail('Invalid global search method')
+
+def test_local_search():
+    local_search_keys = [k for k in LOCAL_SEARCH]
+
+    for key in local_search_keys:
+        try:
+            SimpleBeesDiscrete(
+                n_scout_bees = 50, 
+                elite_site_params = (15, 40), 
+                best_site_params = (15, 30), 
+                coordinates = np.random.randint(10, size=[10, 2]),
+                local_search = key)
+        except ValueError:
+            pytest.fail('Invalid local search method')
+
+
+
+
