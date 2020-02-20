@@ -15,6 +15,9 @@ from sklearn.utils.validation import assert_all_finite, check_array
 # =============================================================================
 
 def check_shape(x, two_dim=False):
+    if x.size = 0:
+        raise ValueError(f"Bad shape{x.shape}")
+
     x = x[np.newaxis, :] if x.ndim == 1 else x
 
     if two_dim:
