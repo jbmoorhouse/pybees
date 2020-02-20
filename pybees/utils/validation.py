@@ -43,7 +43,7 @@ def check_input_array(x, two_dim=False):
     if two_dim:
         if x.shape[1] != 2:
             raise ValueError(f"Bad shape {x.shape}. ``x`` must have "
-                            "shape(n_coordinates, 2). Try "
+                            "shape (n_coordinates, 2). Try "
                             f"shape ({x.shape[0]}, 2)")
 
     return x
