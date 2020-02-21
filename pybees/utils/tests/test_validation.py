@@ -191,4 +191,39 @@ def test_check_coordinate_array():
     assert np.alltrue(check_coordinate_array(arr) == arr.astype(np.float64))
 
 def test_check_continuous_func():
+    params = dict(n_scout_bees = 10, n_dim=2)
+
+    # Incorrect number of inputs  
+    # -------------------------------------------------------------------------
+
+    msg_one = '`func` should accept an np.ndarray with shape  ' \
+        r'\(dimension, n\) where dimension >= 1 and n >= 1. `dimension` is the ' \
+        'number of dimensions a coordinate has and n is the number of point  ' \
+        r'coordinates. `func` should return an np.ndarray with shape \(m,\).See ' \
+        r'the examples for SimpleBeesContinuous\(\)'
+
+    with pytest.raises(AttributeError, match = msg_one):
+        check_continuous_func(lambda x, y: None, **params)
+        check_continuous_func(lambda : None, **params)
+
+    # Incorrect output type
+    # -------------------------------------------------------------------------
+
+    msg_two = r'`func` return must be an np.ndarray. Detected .*'
+
+    with pytest.raises(TypeError, match = msg_two):
+        check_continuous_func(lambda x: None, **params)
+        check_continuous_func(lambda x: 1, **params)
+
+    # Incorrect output shape
+    # -------------------------------------------------------------------------
+
+    msg_three = r'Bad output shape \(10, 2\). `func` should return an array ' \
+        r'with shape \(n, \) where n is the number of point coordinates. ' \
+        'Please see the example functions. E.g. ' \
+        r'func\(np.random.randint\(10, size = \[10, 5\]\)\) should return ' \
+        r'shape \(10,\).'
+
+    with pytest.raises(ValueError, match = msg_three):
+        check_continuous_func(lambda x: x, **params)
 
