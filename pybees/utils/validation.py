@@ -109,11 +109,8 @@ def check_coordinate_array(coordinates):
     if coordinates.dtype.kind not in "fi":
         raise TypeError(f"Detected incorrect type: {coordinates.dtype!r}. "
                          "`coordinates` must contain either integers/floats. "
-                         "Try, `your_array = your_array.astype(np.float64).`")
-        
-    coordinates = coordinates.astype(np.float64)
-    
-    if coordinates.ndim != 2:
+                         "Try, `your_array = your_array.astype(np.float64).`")    
+    elif coordinates.ndim != 2:
         raise ValueError(f"Bad shape {coordinates.shape}. `coordinates` must " 
                          "have shape (m, n) where `m` is the number of "
                          "coordinates and `n` is the number of dimensions. "
@@ -128,7 +125,7 @@ def check_coordinate_array(coordinates):
                          "`coordinates` could take following form which has 3"
                          f" coordinates and 2 dimensions.\n\n{example!r}")
     
-    return coordinates
+    return coordinates.astype(np.float64)
 
 def check_iterations(n_iter):
     """Check n_iter input"""
