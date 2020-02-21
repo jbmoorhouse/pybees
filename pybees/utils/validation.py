@@ -187,7 +187,7 @@ def check_discrete_func(func, size):
         arr = np.random.randint(0, 10, [10, 2])
         permutations = np.random.rand(size, arr.shape[0]).argsort(1)
         
-        cost = func(permutations, arr)
+        res = func(permutations, arr)
     except:
         raise AttributeError('``func`` should accept 2 parameters. ' 
             '``bee_permutations`` should be an np.ndarray with shape ' 
@@ -199,13 +199,15 @@ def check_discrete_func(func, size):
             'an np.ndarray with shape ``(n_permutations,)``. Please see '
             '``combinatorial_single_obj.py`` for examples.')
 
-    if not isinstance(cost, np.ndarray):
+    if not isinstance(res, np.ndarray):
         raise TypeError("``cost_function`` should return an np.ndarray")
-    elif cost.dtype.kind not in "fi":
+    elif res.dtype.kind not in "fi":
         raise TypeError("``cost_function`` should return an np.ndarray with "
             "elements of type int or float")
-    elif cost.ndim != 1 or cost.size != size:
-        raise ValueError(f"Bad shape {cost.shape}. func should return "
+    elif np.isnan(res).any():
+        raise TypeError("Detected np.NaN values in cost function output")
+    elif res.ndim != 1 or res.size != size:
+        raise ValueError(f"Bad shape {res.shape}. func should return "
             "np.ndarray with shape (n_permutations,).")
 
 
