@@ -107,7 +107,7 @@ def check_coordinate_array(coordinates):
     assert_all_finite(coordinates)
     
     if coordinates.dtype.kind not in "fi":
-        raise ValueError(f"Detected incorrect type: {coordinates.dtype!r}. "
+        raise TypeError(f"Detected incorrect type: {coordinates.dtype!r}. "
                          "`coordinates` must contain either integers/floats. "
                          "Try, `your_array = your_array.astype(np.float64).`")
         

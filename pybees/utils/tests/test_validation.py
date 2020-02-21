@@ -134,27 +134,41 @@ def test_check_plot():
     assert sbd.plot() is None
 
 def test_check_coordinate_array():
+
+    msg_one = '`coordinates` must be an np.ndarray. Detected .*'
+
+    with pytest.raises(TypeError, match = msg_one):
+        check_coordinate_array("")
+        check_coordinate_array([])
     
-    msg_one = r'Bad shape .*. .* dimension/s and .* coordinate/s were ' \
+    msg_two = "Input contains NaN, infinity or a value too large for " \
+        r"dtype\('float64'\)."
+
+    with pytest.raises(ValueError, match = msg_two):
+        check_coordinate_array(np.array([[0, 1], [0, 1], [-np.nan, 1]]))
+        check_coordinate_array(np.array([[0, 1], [0, 1], [np.nan, 1]]))
+
+    msg_three = r"Detected incorrect type: dtype\(.*\). `coordinates` must " \
+        "contain either integers/floats. Try, " \
+        r"`your_array = your_array.astype\(np.float64\).`"
+
+    with pytest.raises(TypeError, match = msg_three):
+        check_coordinate_array(np.array([[0, 1], [0, 1], ["", 1]]))
+        check_coordinate_array(np.array([[0, 1], [0, 1], ""]))
+
+    msg_four = r'Bad shape .*. `coordinates` must have shape \(m, n\) where ' \
+        '`m` is the number of coordinates and `n` is the number of ' \
+        'dimensions. See the examples.'
+
+    with pytest.raises(ValueError, match = msg_four):
+        check_coordinate_array(np.random.randint(10, size=[3, 2, 1]))
+        check_coordinate_array(np.random.randint(10, size=[3]))
+
+    msg_five = r'Bad shape .*. .* dimension/s and .* coordinate/s were ' \
         'detected. `coordinates` must have at least 3 coordinates and 2 ' \
         'dimensions. `coordinates` could take following form which has 3 ' \
         'coordinates and 2 dimensions.\n\n.*'
 
-    with pytest.raises(ValueError, match = msg_one):
+    with pytest.raises(ValueError, match = msg_five):
         check_coordinate_array(np.random.randint(10, size=[1, 2]))
         check_coordinate_array(np.random.randint(10, size=[3, 1]))
-
-    msg_two = r'Bad shape .*. `coordinates` must have shape \(m, n\) where ' \
-        '`m` is the number of coordinates and `n` is the number of ' \
-        'dimensions. See the examples.'
-
-    with pytest.raises(ValueError, match = msg_two):
-        check_coordinate_array(np.random.randint(10, size=[3, 2, 1]))
-        check_coordinate_array(np.random.randint(10, size=[3]))
-
-    msg_three = "Input contains NaN, infinity or a value too large for " \
-        r"dtype\('float64'\)."
-
-    with pytest.raises(ValueError, match = msg_three):
-        check_coordinate_array(np.array([[0, 1], [0, 1], [-np.nan, 1]]))
-        check_coordinate_array(np.array([[0, 1], [0, 1], [np.nan, 1]]))
