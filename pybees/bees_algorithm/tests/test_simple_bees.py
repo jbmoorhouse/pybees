@@ -24,7 +24,7 @@ from scipy.optimize import rosen
 # =============================================================================
 
 SBC = SimpleBeesContinuous(
-    n_scout_bees = 10, 
+    n_scout_bees = 20, 
     elite_site_params = (4,20), 
     best_site_params = (4, 10),
     bounds = (-10,10), 
@@ -278,10 +278,7 @@ def test_optimize():
     with pytest.raises(ValueError) as e_info:
         SBC.optimize(h)
     
-    assert str(e_info.value) == 'Bad output shape(10, 2). `func` should ' \
-        'return an array with shape(n, ) where n is the number of point ' \
-        'coordinates. Please see the example functions. E.g. ' \
-        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
+    assert str(e_info.value) == 'Bad output shape (20, 2). `func` should return an array with shape (n, ) where n is the number of point coordinates. Please see the example functions. E.g. func(np.random.randint(10, size = [10, 5])) should return shape (10,).'
 
 
     # discrete incorrect number of inputs 
@@ -321,35 +318,35 @@ def test_optimize():
     # -------------------------------------------------------------------------
 
     with pytest.raises(ValueError) as e_info:
-        SBD.optimize(lambda x, y: np.arange(sbd.n_scout_bees * 2))
+        SBD.optimize(lambda x, y: np.arange(SBD.n_scout_bees * 2))
     
-    assert str(e_info.value) == f'Bad shape ({sbd.n_scout_bees * 2},). func ' \
+    assert str(e_info.value) == f'Bad shape ({SBD.n_scout_bees * 2},). func ' \
         'should return np.ndarray with shape (n_permutations,).'
 
     # Check correct shape but incorrect dimensions.
     # int(sbd.n_scout_bees/2) is used so that the size is correct, but the 
     # number of dimensions is incorrect.
     with pytest.raises(ValueError) as e_info:
-        sbd.optimize(lambda x, y: np.random.randint(
-            10, size=[2, int(sbd.n_scout_bees/2)]))
+        SBD.optimize(lambda x, y: np.random.randint(
+            10, size=[2, int(SBD.n_scout_bees/2)]))
     
     # continuous incorrect output shape
     # -------------------------------------------------------------------------
     with pytest.raises(ValueError) as e_info:
-        sbc.optimize(rosen)
+        SBC.optimize(rosen)
 
-    assert str(e_info.value) == 'Bad output shape(2,). `func` should ' \
-        'return an array with shape(n, ) where n is the number of point ' \
+    assert str(e_info.value) == 'Bad output shape (2,). `func` should ' \
+        'return an array with shape (n, ) where n is the number of point ' \
         'coordinates. Please see the example functions. E.g. ' \
-        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
+        'func(np.random.randint(10, size = [10, 5])) should return shape (10,).'
 
     with pytest.raises(ValueError) as e_info:
         SBC.optimize(sum)
 
-    assert str(e_info.value) == 'Bad output shape(2,). `func` should ' \
-        'return an array with shape(n, ) where n is the number of point ' \
+    assert str(e_info.value) == 'Bad output shape (2,). `func` should ' \
+        'return an array with shape (n, ) where n is the number of point ' \
         'coordinates. Please see the example functions. E.g. ' \
-        'func(np.random.randint(10, size = [10, 5])) should return shape(10,).'
+        'func(np.random.randint(10, size = [10, 5])) should return shape (10,).'
 
     # continuous incorrect output type
     # -------------------------------------------------------------------------
