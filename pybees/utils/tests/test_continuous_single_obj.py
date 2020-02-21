@@ -104,7 +104,7 @@ def input_test(func, two_dims=False):
     with pytest.raises(ValueError) as e_info:
         func(np.array([]))
 
-    assert str(e_info.value) == f"Bad shape(0,)"
+    assert str(e_info.value) == f"Bad shape (0,)"
 
     # bad input shape when only 2 dimensions accepted
     # -------------------------------------------------------------------------
@@ -118,7 +118,7 @@ def input_test(func, two_dims=False):
             arr = arr[np.newaxis, :] if arr.ndim == 1 else arr
             
             assert str(e_info.value) == f'Bad shape {arr.shape}. ``x`` must ' \
-                f'have shape(n_coordinates, 2). Try shape({arr.shape[0]}, 2)'
+                f'have shape (n_coordinates, 2). Try shape ({arr.shape[0]}, 2)'
 
 # =============================================================================
 # Tests many local minima functions
