@@ -116,7 +116,7 @@ def check_coordinate_array(coordinates):
     if coordinates.ndim != 2:
         raise ValueError(f"Bad shape {coordinates.shape}. `coordinates` must " 
                          "have shape (m, n) where `m` is the number of "
-                         "coordinates and `m` is the number of dimensions. "
+                         "coordinates and `n` is the number of dimensions. "
                          "See the examples.")
         
     m, n = coordinates.shape
