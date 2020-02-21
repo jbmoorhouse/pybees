@@ -1,4 +1,11 @@
-from pybees.utils.continuous_single_obj import *
+from pybees.utils.continuous_single_obj import (
+    levy, 
+    ackley,
+    drop_wave,
+    de_jong,
+    easom,
+    michalewicz
+)
 
 import pytest
 import numpy as np
