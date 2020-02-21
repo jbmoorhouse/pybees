@@ -212,7 +212,7 @@ def check_discrete_func(func, size):
             "np.ndarray with shape (n_permutations,).")
 
 
-def check_continuous_func(func, n_dim):
+def check_continuous_func(func, n_scout_bees, n_dim):
     """[summary]
     
     Parameters
@@ -236,7 +236,7 @@ def check_continuous_func(func, n_dim):
     """
 
     try:
-        x = np.random.randint(10, size = [10, n_dim])
+        x = np.random.randint(10, size = [n_scout_bees, n_dim])
         cost = func(x)
     except:
         raise AttributeError("`func` should accept an np.ndarray with shape  "
@@ -252,9 +252,9 @@ def check_continuous_func(func, n_dim):
         
     elif cost.ndim != 1 or cost.size != x.shape[0]:
         raise ValueError(f"Bad output shape {cost.shape}. `func` should return " 
-                         "an array with shape(n, ) where n is the number of point "
+                         "an array with shape (n, ) where n is the number of point "
                          "coordinates. Please see the example functions. E.g. "
                          "func(np.random.randint(10, size = [10, 5])) should "
-                         "return shape(10,).")
+                         "return shape (10,).")
 
 
