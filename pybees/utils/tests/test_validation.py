@@ -214,16 +214,70 @@ def test_check_continuous_func():
     with pytest.raises(TypeError, match = msg_two):
         check_continuous_func(lambda x: None, **params)
         check_continuous_func(lambda x: 1, **params)
+        check_continuous_func(np.sum, **params)
+        
+    # Incorrect output shape
+    # -------------------------------------------------------------------------
+
+    msg_three = r"Bad output shape \(10, 2\). `func` should return an array " \
+        r"with shape \(n, \) where n is the number of point coordinates. " \
+        "Please see the example functions. E.g. " \
+        r"func\(np.random.randint\(10, size = \[10, 5\]\)\) should return " \
+        r"shape \(10,\)."
+
+    with pytest.raises(ValueError, match = msg_three):
+        check_continuous_func(lambda x: x, **params)
+
+def test_check_discrete_func():
+    params = dict(size = 3)
+
+    # Incorrect number of inputs  
+    # -------------------------------------------------------------------------
+
+    msg_one = r"``func`` should accept 2 parameters. ``bee_permutations`` " \
+        "should be an np.ndarray with shape " \
+        r"``\(n_permutations, n_coordinates\)``, which represents " \
+        r"``n_permutations`` of some ``range\(coordinates\)``. For example " \
+        r"``np.array\(\[0,1,2\], \[2,1,0\]\)`` where ``n_permutations = 2``. "\
+        r"The second parameter, ``coordinates``, is an np.ndarray with shape " \
+        r"``\(n_coordinates, n_dimensions\)``. ``func`` should return an " \
+        r"np.ndarray with shape ``\(n_permutations,\)``. Please see " \
+        r"``combinatorial_single_obj.py`` for examples."
+
+    with pytest.raises(AttributeError, match = msg_one):
+        check_discrete_func(lambda: None, **params)
+        check_discrete_func(lambda x: None, **params)
+        check_discrete_func(lambda x, y, z: None, **params)
+
+    # Incorrect output type
+    # -------------------------------------------------------------------------
+   
+    msg_two = "``cost_function`` should return an np.ndarray"
+
+    with pytest.raises(TypeError, match = msg_two):
+        check_discrete_func(lambda x, y: None, **params)
+        check_discrete_func(lambda x, y: 1, **params)
+        check_discrete_func(lambda x, y: "", **params)
 
     # Incorrect output shape
     # -------------------------------------------------------------------------
 
-    msg_three = r'Bad output shape \(10, 2\). `func` should return an array ' \
-        r'with shape \(n, \) where n is the number of point coordinates. ' \
-        'Please see the example functions. E.g. ' \
-        r'func\(np.random.randint\(10, size = \[10, 5\]\)\) should return ' \
-        r'shape \(10,\).'
+    msg_three = r"Bad shape \(.*\). func should return np.ndarray with shape " \
+        r"\(n_permutations,\)."
 
     with pytest.raises(ValueError, match = msg_three):
-        check_continuous_func(lambda x: x, **params)
+        check_discrete_func(lambda x, y: x, **params)
+        check_discrete_func(lambda x, y: y, **params)
+
+    msg_four = "``cost_function`` should return an np.ndarray with elements " \
+        "of type int or float"
+
+    with pytest.raises(TypeError, match = msg_four):
+        check_discrete_func(lambda x, y: np.array([""] * 10), **params)
+        check_discrete_func(lambda x, y: np.array([""]), **params)
+
+    msg_five = "Detected np.NaN values in cost function output"
+
+    with pytest.raises(TypeError, match = msg_five):
+        check_discrete_func(lambda x, y: np.array([np.nan] * 10), **params)
 
