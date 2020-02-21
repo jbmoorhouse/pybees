@@ -124,15 +124,6 @@ def test_check_plot():
     with pytest.raises(AttributeError, match=msg):
         sbd.plot()
 
-    # Test correct run
-    # -------------------------------------------------------------------------
-   
-    sbc.optimize(levy)
-    assert sbc.plot() is None
-
-    sbd.optimize(tour_distance)
-    assert sbd.plot() is None
-
 def test_check_coordinate_array():
 
     msg_one = '`coordinates` must be an np.ndarray. Detected .*'
