@@ -342,7 +342,7 @@ class SimpleBeesContinuous(BaseBeesAlgorithm):
 
         # Check the continuous function accepts and returns the correct
         # data types and shapes
-        check_continuous_func(func, self.n_dim)
+        check_continuous_func(func, self.n_scout_bees, self.n_dim)
 
         # Check n_iter input is correct
         n_iter = check_iterations(n_iter)
