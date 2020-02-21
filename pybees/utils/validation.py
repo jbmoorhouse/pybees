@@ -234,7 +234,7 @@ def check_continuous_func(func, n_scout_bees, n_dim):
 
     try:
         x = np.random.randint(10, size = [n_scout_bees, n_dim])
-        cost = func(x)
+        res = func(x)
     except:
         raise AttributeError("`func` should accept an np.ndarray with shape  "
                              "(dimension, n) where dimension >= 1 and n >= 1. " 
@@ -244,11 +244,11 @@ def check_continuous_func(func, n_scout_bees, n_dim):
                              "np.ndarray with shape (m,).See the examples "
                              "for SimpleBeesContinuous()")
         
-    if not isinstance(cost, np.ndarray):
-        raise TypeError(f"`func` return must be an np.ndarray. Detected {cost}")
+    if not isinstance(res, np.ndarray):
+        raise TypeError(f"`func` return must be an np.ndarray. Detected {res}")
         
-    elif cost.ndim != 1 or cost.size != x.shape[0]:
-        raise ValueError(f"Bad output shape {cost.shape}. `func` should return " 
+    elif res.ndim != 1 or res.size != x.shape[0]:
+        raise ValueError(f"Bad output shape {res.shape}. `func` should return " 
                          "an array with shape (n, ) where n is the number of point "
                          "coordinates. Please see the example functions. E.g. "
                          "func(np.random.randint(10, size = [10, 5])) should "
