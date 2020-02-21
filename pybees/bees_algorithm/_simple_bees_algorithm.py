@@ -553,6 +553,8 @@ class SimpleBeesDiscrete(BaseBeesAlgorithm):
             best_site_params=best_site_params
         )
 
+        # Ensure coordinates is correct. If this is removed, it must be added
+        # to GlobalSearch, especially for checking np.nan values.
         self.coordinates = check_coordinate_array(coordinates)
         self.global_search_funcs = cs.GlobalSearch(coordinates)
 
