@@ -134,11 +134,17 @@ def test_check_plot():
 
 def test_check_coordinate_array():
 
+    # Incorrect input type 
+    # -------------------------------------------------------------------------
+
     msg_one = '`coordinates` must be an np.ndarray. Detected .*'
 
     with pytest.raises(TypeError, match = msg_one):
         check_coordinate_array("")
         check_coordinate_array([])
+
+    # Test for finite values 
+    # -------------------------------------------------------------------------
     
     msg_two = "Input contains NaN, infinity or a value too large for " \
         r"dtype\('float64'\)."
@@ -147,6 +153,9 @@ def test_check_coordinate_array():
         check_coordinate_array(np.array([[0, 1], [0, 1], [-np.nan, 1]]))
         check_coordinate_array(np.array([[0, 1], [0, 1], [np.nan, 1]]))
 
+    # Incorrect element types
+    # -------------------------------------------------------------------------
+
     msg_three = r"Detected incorrect type: dtype\(.*\). `coordinates` must " \
         "contain either integers/floats. Try, " \
         r"`your_array = your_array.astype\(np.float64\).`"
@@ -154,6 +163,9 @@ def test_check_coordinate_array():
     with pytest.raises(TypeError, match = msg_three):
         check_coordinate_array(np.array([[0, 1], [0, 1], ["", 1]]))
         check_coordinate_array(np.array([[0, 1], [0, 1], ""]))
+
+    # Incorrect input shape 
+    # -------------------------------------------------------------------------
 
     msg_four = r'Bad shape .*. `coordinates` must have shape \(m, n\) where ' \
         '`m` is the number of coordinates and `n` is the number of ' \
@@ -171,3 +183,12 @@ def test_check_coordinate_array():
     with pytest.raises(ValueError, match = msg_five):
         check_coordinate_array(np.random.randint(10, size=[1, 2]))
         check_coordinate_array(np.random.randint(10, size=[3, 1]))
+
+    # Check correct input
+    # -------------------------------------------------------------------------
+
+    arr = np.random.randint(10, size=[10, 2])
+    assert np.alltrue(check_coordinate_array(arr) == arr.astype(np.float64))
+
+def test_check_continuous_func():
+
