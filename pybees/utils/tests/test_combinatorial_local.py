@@ -5,79 +5,65 @@ from pybees.utils.combinatorial_search import (
     _random_choice_unique,
     swap,
     reversion,
-    insertion
+    insertion,
+    _prepare_array
 )
+
+# =============================================================================
+# Results and indices
+# =============================================================================
+
+bee_permutation, n_bees = np.arange(5),  10
+
+funcs, test_results = [swap, reversion, insertion], {}
+
+for func in funcs:
+    func_name = func.__name__
+
+    np.random.seed(0)
+    res_one = func(bee_permutation, n_bees)
+    res_two = func(bee_permutation, n_bees)
+
+    test_results[f"{func_name}_1"] = (bee_permutation, res_one)
+    test_results[f"{func_name}_2"] = (bee_permutation, res_two)
+
+def helper(func, arr, solution):
+    # simple test with np.random.seed(0)
+    # -------------------------------------------------------------------------
+    res = func(arr, 10)
+
+    assert np.array_equal(res, solution)
 
 # =============================================================================
 # Local search tests
 # =============================================================================
 
-def test_swap():
+# swap
+# -----------------------------------------------------------------------------
+np.random.seed(0)
 
-    # simple test with np.random.seed(0)
-    # -------------------------------------------------------------------------
-    np.random.seed(0)
-    bee_permutation = np.arange(10)
-    res = swap(bee_permutation, 16)
+@pytest.mark.parametrize(
+    "arr, solution", 
+    [test_results['swap_1'], test_results['swap_2']])
+def test_swap(arr, solution):
+    helper(swap, arr, solution)
 
-    # swapped arguments and known solution with np.random.seed(0)
-    args = np.argwhere(res != bee_permutation)[:, 1].reshape(-1, 2)
-    args_sol = np.array([[4, 9], [4, 6], [4, 6], [0, 4], [3, 7], [3, 5], [7, 9],
-                    [5, 9], [2, 7], [7, 9], [4, 8], [3, 5], [6, 9], [2, 3],
-                    [1, 6], [4, 9]])
+# reversion
+# -----------------------------------------------------------------------------
+np.random.seed(0)
 
-    res_sol = np.array([[0, 1, 2, 3, 9, 5, 6, 7, 8, 4],
-                        [0, 1, 2, 3, 6, 5, 4, 7, 8, 9],
-                        [0, 1, 2, 3, 6, 5, 4, 7, 8, 9],
-                        [4, 1, 2, 3, 0, 5, 6, 7, 8, 9],
-                        [0, 1, 2, 7, 4, 5, 6, 3, 8, 9],
-                        [0, 1, 2, 5, 4, 3, 6, 7, 8, 9],
-                        [0, 1, 2, 3, 4, 5, 6, 9, 8, 7],
-                        [0, 1, 2, 3, 4, 9, 6, 7, 8, 5],
-                        [0, 1, 7, 3, 4, 5, 6, 2, 8, 9],
-                        [0, 1, 2, 3, 4, 5, 6, 9, 8, 7],
-                        [0, 1, 2, 3, 8, 5, 6, 7, 4, 9],
-                        [0, 1, 2, 5, 4, 3, 6, 7, 8, 9],
-                        [0, 1, 2, 3, 4, 5, 9, 7, 8, 6],
-                        [0, 1, 3, 2, 4, 5, 6, 7, 8, 9],
-                        [0, 6, 2, 3, 4, 5, 1, 7, 8, 9],
-                        [0, 1, 2, 3, 9, 5, 6, 7, 8, 4]])
+@pytest.mark.parametrize(
+    "arr, solution", 
+    [test_results['reversion_1'], test_results['reversion_2']])
+def test_reversion(arr, solution):
+    helper(reversion, arr, solution)
 
-    assert np.array_equal(args, args_sol)
-    assert np.array_equal(res, res_sol)
+# insertion
+# -----------------------------------------------------------------------------
+np.random.seed(0)
 
-    # simple test with np.random.seed(3)
-    # -------------------------------------------------------------------------
-    np.random.seed(3)
-    bee_permutation = np.arange(20)
-    res = swap(bee_permutation, 10)
-
-    # swapped arguments and known solution with np.random.seed(3)
-    args = np.argwhere(res != bee_permutation)[:, 1].reshape(-1, 2)
-    args_sol = np.array([[10, 16], [ 3, 15], [11, 13], [ 6, 15], [ 0,  2], 
-                         [14, 19], [ 9, 19], [ 9, 13], [ 7, 15], [ 6,  7]])
-
-    res_sol = np.array([[ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 
-                        16, 11, 12, 13, 14, 15, 10, 17, 18, 19],
-                        [ 0,  1,  2, 15,  4,  5,  6,  7,  8,  9, 
-                        10, 11, 12, 13, 14,  3, 16, 17, 18, 19],
-                        [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 
-                        10, 13, 12, 11, 14, 15, 16, 17, 18, 19],
-                        [ 0,  1,  2,  3,  4,  5, 15,  7,  8,  9, 
-                        10, 11, 12, 13, 14,  6, 16, 17, 18, 19],
-                        [ 2,  1,  0,  3,  4,  5,  6,  7,  8,  9, 
-                        10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
-                        [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 
-                        10, 11, 12, 13, 19, 15, 16, 17, 18, 14],
-                        [ 0,  1,  2,  3,  4,  5,  6,  7,  8, 19, 
-                        10, 11, 12, 13, 14, 15, 16, 17, 18,  9],
-                        [ 0,  1,  2,  3,  4,  5,  6,  7,  8, 13, 
-                        10, 11, 12,  9, 14, 15, 16, 17, 18, 19],
-                        [ 0,  1,  2,  3,  4,  5,  6, 15,  8,  9, 
-                        10, 11, 12, 13, 14,  7, 16, 17, 18, 19],
-                        [ 0,  1,  2,  3,  4,  5,  7,  6,  8,  9, 
-                        10, 11, 12, 13, 14, 15, 16, 17, 18, 19]])
-
-    assert np.array_equal(args, args_sol)
-    assert np.array_equal(res, res_sol)
-
+@pytest.mark.parametrize(
+    "arr, solution", 
+    [test_results['insertion_1'], test_results['insertion_2']])
+def test_insertion(arr, solution):
+    helper(insertion, arr, solution)
