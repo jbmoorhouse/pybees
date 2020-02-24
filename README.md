@@ -2,7 +2,7 @@
 
 <br/>
 <p align="center">
-   <img src="https://media.giphy.com/media/yIXVnzpoNiE0w/source.gif" width="500" />
+   <img src="https://media.giphy.com/media/yIXVnzpoNiE0w/source.gif" width="600" />
 </p>
 <br/>
 
@@ -12,15 +12,15 @@
 
 The bees algorithm is a swarm based search algorithm, which mimics the food foraging behaviour of honey bees. The basic algorithm is suitable for both [continuous](https://en.wikipedia.org/wiki/Continuous_optimization) and [combinatorial](https://en.wikipedia.org/wiki/Combinatorial_optimization) optimization problems, which is demonstrated in the [**basic examples**](#Basic-Examples) section.
 
+
 ## Main features
 
-The pybees algorithm can be used for optimizing:
-
-- High-level API to optimize continuous functions (training simple a multilayer perceptron).
-- High-level API discrete functions (traveling salesperson problem).
+- High-level API to optimize continuous functions (training simple a [**multilayer perceptron**](https://en.wikipedia.org/wiki/Multilayer_perceptron)).
+- High-level API to optimize discrete functions ([**traveling salesperson problem**](https://en.wikipedia.org/wiki/Travelling_salesman_problem)).
 - Built in single-objective cost function.
-- [Plotly](https://plot.ly/python/) plotting tools for 2D and 3D (both continuous and discrete).
+- [**plotly**](https://plot.ly/python/) plotting tools for 2D and 3D (both continuous and discrete).
 - Extensible API for developing new ideas.
+    
 
 ## Where to get it
 
@@ -34,12 +34,12 @@ pip install pybees
 
 pybees requires:
 
-numpy >= 1.17.4
-scipy >= (1.3.2
-plotly >= (4.4.1
-tqdm >= 4.40.2
-sklearn >= 0.22
-pandas >= 0.25.3
+numpy >= 1.17.4 <br/>
+scipy >= 1.3.2 <br/>
+plotly >= 4.4.1<br/>
+tqdm >= 4.40.2<br/>
+sklearn >= 0.22<br/>
+pandas >= 0.25.3<br/>
 
 ## License
 
@@ -48,8 +48,7 @@ pandas >= 0.25.3
 
 ## Basic Examples
 
-### Continuous function optimization
-
+### Continuous function optimization 
 ```python
 from pybees.utils.continuous_single_obj import levy
 from pybees import SimpleBeesContinuous
@@ -75,7 +74,7 @@ x: array([0.99905553, 0.99967304])
 
 The results may also be visualised by using the following
 
-```
+```python
 sbc.plot(global_min = (1, 1))
 ```
 
@@ -113,8 +112,8 @@ nit: 100
 x: array([1., 9., 7., 5., 0., 3., 4., 6., 2., 8.])
 ```
 
+
 The results may also be visualised by using the following
 
 ```python
 sbd.plot()
-```
