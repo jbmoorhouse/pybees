@@ -76,3 +76,36 @@ GS = GlobalSearch(np.random.randint(10, size=[10, 2]))
 def test_permute(permute, correct_output):
     assert np.allclose(permute, correct_output)
 
+
+@pytest.mark.parametrize("permute_bad_input", ["", [], 1.0])
+def test_permute_bad_inputs(permute_bad_input):
+    msg = ".* object cannot be interpreted as an integer"
+
+    with pytest.raises(TypeError, match = msg): 
+        GS.permute(permute_bad_input)
+
+# =============================================================================
+# Test nearest_neighbor
+# =============================================================================
+
+@pytest.mark.parametrize("nearest_neighbor, correct_output", 
+[(GS.nearest_neighbor(5), np.array([[6, 2, 8, 5, 3, 4, 1, 0, 9, 7],
+        [9, 0, 1, 4, 3, 7, 5, 8, 6, 2],
+        [8, 5, 6, 2, 3, 4, 1, 0, 9, 7],
+        [0, 9, 5, 8, 6, 2, 3, 4, 1, 7],
+        [8, 5, 6, 2, 3, 4, 1, 0, 9, 7]])),
+ (GS.nearest_neighbor(5), np.array([[5, 8, 6, 2, 3, 4, 1, 0, 9, 7],
+        [9, 0, 1, 4, 3, 7, 5, 8, 6, 2],
+        [0, 9, 5, 8, 6, 2, 3, 4, 1, 7],
+        [9, 0, 1, 4, 3, 7, 5, 8, 6, 2],
+        [6, 2, 8, 5, 3, 4, 1, 0, 9, 7]]))]
+)
+def test_nearest_neighbor(nearest_neighbor, correct_output):
+    assert np.allclose(nearest_neighbor, correct_output)
+
+@pytest.mark.parametrize("nn_bad_input", ["", [], 1.0])
+def test_nn_bad_inputs(nn_bad_input):
+    msg = ".* object cannot be interpreted as an integer"
+
+    with pytest.raises(TypeError, match = msg): 
+        GS.nearest_neighbor(nn_bad_input)
