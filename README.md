@@ -15,9 +15,10 @@ The bees algorithm is a swarm based search algorithm, which mimics the food fora
 
 ## Main features
 
-- High-level API to optimize continuous functions (training simple a [**multilayer perceptron**](https://en.wikipedia.org/wiki/Multilayer_perceptron)).
+- High-level API to optimize continuous functions (training a [**multilayer perceptron**](https://en.wikipedia.org/wiki/Multilayer_perceptron)).
 - High-level API to optimize discrete functions ([**traveling salesperson problem**](https://en.wikipedia.org/wiki/Travelling_salesman_problem)).
-- Built in single-objective cost function.
+- Built in single-objective cost functions.
+
 - [**plotly**](https://plot.ly/python/) plotting tools for 2D and 3D (both continuous and discrete).
 - Extensible API for developing new ideas.
     
