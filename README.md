@@ -39,14 +39,12 @@ sbc = SimpleBeesContinuous(
     n_dim = 2,
     nbhd_radius = 2
 )
-
-res = sbc.optimize(levy)
 ```
 
 This operation returns a `scipy.optimize.optimize.OptimizeResult`. `fun` represents the value of the objective function (lowest point). `nit` represents the number of iterations taken. `x` represents the coordinates of the value found for the objective function.
 
 ```
->>> res
+>>> sbc.optimize(levy)
 fun: 1.007063464503951e-06
 nit: 100
 x: array([0.99905553, 0.99967304])
@@ -64,14 +62,13 @@ sbd = SimpleBeesDiscrete(
     best_site_params = (15, 30), 
     coordinates = np.random.randint(10, size=[10, 2])
 )
-
-res = sbd.optimize(tour_distance)
 ```
 
 This operation returns a `scipy.optimize.optimize.OptimizeResult`. `coordinates` represents a specific sequence of coordinates,  resulting from the optimization of some objective function. In this example, `tour_distance` was minimized. As such, `coordinates` represents the sequence, corresponding to the shortest path between all coordinates (i.e. travelling salesperson problem). `fun` represents the value of the objective function (shortest distance). `nit` represents the number of iterations taken. `x` represents the permutation of the original sequence passed to `SimpleBeesDiscrete` which gives the shortest distance.
 
 ```
->>> res
+>>> sbd.optimize(tour_distance)
+
 coordinates: array([
        [7., 8.],
        [4., 8.],
