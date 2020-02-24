@@ -35,7 +35,7 @@ pip install pybees
 
 Please visit the examples folder to view the demonstration [examples](examples). These include.
 
-- [Continuous function](https://github.com/jbmoorhouse/pybees/blob/master/examples/continuous.ipynb) optimization ([levy](https://www.sfu.ca/~ssurjano/levy.html), [drop_wave](https://www.sfu.ca/~ssurjano/drop.html) and [michalewicz](https://www.sfu.ca/~ssurjano/michal.html))
+- [Continuous function](https://github.com/jbmoorhouse/pybees/blob/master/examples/continuous.ipynb) optimization ([*levy*](https://www.sfu.ca/~ssurjano/levy.html), [*drop_wave*](https://www.sfu.ca/~ssurjano/drop.html) and [*michalewicz*](https://www.sfu.ca/~ssurjano/michal.html))
 - [Combinatorial function](https://github.com/jbmoorhouse/pybees/blob/master/examples/combinatorial.ipynb) optimization (travelling salesperson problem)
 
 Future examples will include
