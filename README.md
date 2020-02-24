@@ -1,12 +1,18 @@
-# pybees: Python optimisation toolkit using the bees algorithm
+## pybees: Python optimization toolkit using the bees algorithm
 
 ## What is it
 
-pybees is a Python package for function optimization. It uses the nature inspired bees algorithm, proposed by Pham et. al. and is built on top of SciPy. pybees distributed under the 3-Clause BSD license.
+**pybees** is a Python package for function optimization. It uses the nature inspired [bees algorithm](https://www.researchgate.net/publication/260985621_The_Bees_Algorithm_Technical_Note), proposed by Pham et al. and is built on top of SciPy. **pybees** is distributed under the 3-Clause BSD license.
 
+The bees algorithm is a swarm based search algorithm, which mimics the food foraging behaviour of honey bees. The basic algorithm is suitable for both [continuous](https://en.wikipedia.org/wiki/Continuous_optimization) and [combinatorial](https://en.wikipedia.org/wiki/Combinatorial_optimization) optimization problems, which is demonstrated in the [basic usage](#Basic-Usage) section.
 
 
 ## Main features
+
+The pybees algorithm can be used to find the global minima.
+
+
+
 
 ## Where to get it
 
@@ -20,7 +26,7 @@ pybees is a Python package for function optimization. It uses the nature inspire
 
 ## Basic Usage
 
-### Continuous optimization
+### Continuous optimization 
 ```
 from pybees.utils.continuous_single_obj import levy
 from pybees import SimpleBeesContinuous
@@ -37,7 +43,7 @@ sbc = SimpleBeesContinuous(
 res = sbc.optimize(levy)
 ```
 
-This operation returns a `scipy.optimize.optimize.OptimizeResult`.
+This operation returns a `scipy.optimize.optimize.OptimizeResult`. `fun` represents the value of the objective function (lowest point). `nit` represents the number of iterations taken. `x` represents the coordinates of the value found for the objective function.
 
 ```
 >>> res
@@ -46,7 +52,7 @@ nit: 100
 x: array([0.99905553, 0.99967304])
 ```
 
-### Combinatorial optimization
+### Combinatorial optimization (e.g. travelling salesperson problem)
 
 ```
 from pybees.utils.combinatorial_single_obj import tour_distance
@@ -62,7 +68,7 @@ sbd = SimpleBeesDiscrete(
 res = sbd.optimize(tour_distance)
 ```
 
-This operation returns a `scipy.optimize.optimize.OptimizeResult`.
+This operation returns a `scipy.optimize.optimize.OptimizeResult`. `coordinates` represents a specific sequence of coordinates,  resulting from the optimization of some objective function. In this example, `tour_distance` was minimized. As such, `coordinates` represents the sequence, corresponding to the shortest path between all coordinates (i.e. travelling salesperson problem). `fun` represents the value of the objective function (shortest distance). `nit` represents the number of iterations taken. `x` represents the permutation of the original sequence passed to `SimpleBeesDiscrete` which gives the shortest distance.
 
 ```
 >>> res
@@ -80,3 +86,4 @@ coordinates: array([
 fun: 27.228009718084742
 nit: 100
 x: array([1., 9., 7., 5., 0., 3., 4., 6., 2., 8.])
+```
