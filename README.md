@@ -1,6 +1,8 @@
 ## pybees: Python optimization toolkit using the bees algorithm
 
-## What is it
+<img src="https://media.giphy.com/media/yIXVnzpoNiE0w/source.gif"/>
+
+## What is it?
 
 **pybees** is a Python package for function optimization. It uses the nature inspired [bees algorithm](https://www.researchgate.net/publication/260985621_The_Bees_Algorithm_Technical_Note), proposed by Pham et al. and is built on top of SciPy. **pybees** is distributed under the 3-Clause BSD license.
 
@@ -41,7 +43,7 @@ sbc = SimpleBeesContinuous(
 )
 ```
 
-This operation returns a `scipy.optimize.optimize.OptimizeResult`. `fun` represents the value of the objective function (lowest point). `nit` represents the number of iterations taken. `x` represents the coordinates of the value found for the objective function.
+This operation returns a `scipy.optimize.OptimizeResult`. `fun` represents the value of the objective function (lowest point). `nit` represents the number of iterations taken. `x` represents the coordinates of the value found for the objective function.
 
 ```
 >>> sbc.optimize(levy)
@@ -64,7 +66,7 @@ sbd = SimpleBeesDiscrete(
 )
 ```
 
-This operation returns a `scipy.optimize.optimize.OptimizeResult`. `coordinates` represents a specific sequence of coordinates,  resulting from the optimization of some objective function. In this example, `tour_distance` was minimized. As such, `coordinates` represents the sequence, corresponding to the shortest path between all coordinates (i.e. travelling salesperson problem). `fun` represents the value of the objective function (shortest distance). `nit` represents the number of iterations taken. `x` represents the permutation of the original sequence passed to `SimpleBeesDiscrete` which gives the shortest distance.
+This operation returns a `scipy.optimize.OptimizeResult`. `coordinates` represents a specific sequence of coordinates,  resulting from the optimization of some objective function. In this example, `tour_distance` was minimized. As such, `coordinates` represents the sequence, corresponding to the shortest path between all coordinates (i.e. travelling salesperson problem). `fun` represents the value of the objective function (shortest distance). `nit` represents the number of iterations taken. `x` represents the permutation of the original sequence passed to `SimpleBeesDiscrete` which gives the shortest distance.
 
 ```
 >>> sbd.optimize(tour_distance)
