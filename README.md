@@ -19,14 +19,14 @@ The pybees algorithm can be used for optimizing:
 - High-level API to optimize continuous functions (training simple a multilayer perceptron).
 - High-level API discrete functions (traveling salesperson problem).
 - Built in single-objective cost function.
-- Plotly plotting tools for 2D and 3D (both continuous and discrete).
+- [Plotly](https://plot.ly/python/) plotting tools for 2D and 3D (both continuous and discrete).
 - Extensible API for developing new ideas.
 
 ## Where to get it
 
 If all dependencies are already installed, then the easiest way to install pybees is using `pip`.
 
-```
+```python
 pip install pybees
 ```
 
@@ -48,8 +48,9 @@ pandas >= 0.25.3
 
 ## Basic Examples
 
-### Continuous function optimization 
-```
+### Continuous function optimization
+
+```python
 from pybees.utils.continuous_single_obj import levy
 from pybees import SimpleBeesContinuous
 
@@ -65,7 +66,7 @@ sbc = SimpleBeesContinuous(
 
 This operation returns a `scipy.optimize.OptimizeResult`. `fun` represents the value of the objective function (lowest point). `nit` represents the number of iterations taken. `x` represents the coordinates of the value found for the objective function.
 
-```
+```python
 >>> sbc.optimize(levy)
 fun: 1.007063464503951e-06
 nit: 100
@@ -80,7 +81,7 @@ sbc.plot(global_min = (1, 1))
 
 ### Combinatorial optimization (e.g. travelling salesperson problem)
 
-```
+```python
 from pybees.utils.combinatorial_single_obj import tour_distance
 from pybees import SimpleBeesDiscrete
 
@@ -94,7 +95,7 @@ sbd = SimpleBeesDiscrete(
 
 This operation returns a `scipy.optimize.OptimizeResult`. `coordinates` represents a specific sequence of coordinates,  resulting from the optimization of some objective function. In this example, `tour_distance` was minimized. As such, `coordinates` represents the sequence, corresponding to the shortest path between all coordinates (i.e. travelling salesperson problem). `fun` represents the value of the objective function (shortest distance). `nit` represents the number of iterations taken. `x` represents the permutation of the original sequence passed to `SimpleBeesDiscrete` which gives the shortest distance.
 
-```
+```python
 >>> sbd.optimize(tour_distance)
 coordinates: array([
        [7., 8.],
@@ -112,9 +113,8 @@ nit: 100
 x: array([1., 9., 7., 5., 0., 3., 4., 6., 2., 8.])
 ```
 
-
 The results may also be visualised by using the following
 
-```
+```python
 sbd.plot()
 ```
