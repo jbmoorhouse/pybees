@@ -1,7 +1,8 @@
 ## pybees: Python optimization toolkit using the bees algorithm
 
-<img src="https://media.giphy.com/media/yIXVnzpoNiE0w/source.gif"/>
-
+<p align="center">
+   <img src="https://media.giphy.com/media/yIXVnzpoNiE0w/source.gif" width="500" />
+</p>
 ## What is it?
 
 **pybees** is a Python package for function optimization. It uses the nature inspired [bees algorithm](https://www.researchgate.net/publication/260985621_The_Bees_Algorithm_Technical_Note), proposed by Pham et al. and is built on top of SciPy. **pybees** is distributed under the 3-Clause BSD license.
