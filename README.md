@@ -34,12 +34,12 @@ pip install pybees
 
 pybees requires:
 
-numpy >= 1.17.4 <br/>
-scipy >= 1.3.2 <br/>
-plotly >= 4.4.1<br/>
-tqdm >= 4.40.2<br/>
-sklearn >= 0.22<br/>
-pandas >= 0.25.3<br/>
+- numpy >= 1.17.4 <br/>
+- scipy >= 1.3.2 <br/>
+- plotly >= 4.4.1<br/>
+- tqdm >= 4.40.2<br/>
+- sklearn >= 0.22<br/>
+- pandas >= 0.25.3<br/>
 
 ## License
 
