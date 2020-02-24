@@ -90,7 +90,7 @@ sbd = pb.SimpleBeesDiscrete(
 )
 ```
 
-This operation returns a `scipy.optimize.OptimizeResult`. `coordinates` represents a specific sequence of coordinates,  resulting from the optimization of some objective function. In this example, `tour_distance` was minimized. As such, `coordinates` represents the sequence, corresponding to the shortest path between all coordinates (i.e. travelling salesperson problem). `fun` represents the value of the objective function (shortest distance). `nit` represents the number of iterations taken. `x` represents the permutation of the original sequence passed to `SimpleBeesDiscrete` which gives the shortest distance.
+This operation returns a `scipy.optimize.OptimizeResult` result. `res.coordinates` represents `sbd.coordinates` reordered, resulting from the optimization of some objective function. In this example, `tour_distance` was minimized. As such, `coordinates` represents the sequence, corresponding to the shortest path between all coordinates (i.e. travelling salesperson problem). `fun` represents the value of the objective function (shortest distance). `nit` represents the number of iterations taken. `x` represents the permutation of the original sequence passed to `SimpleBeesDiscrete` which gives the shortest distance.
 
 ```python
 >>> sbd.optimize(pb.tour_distance)
@@ -115,3 +115,4 @@ The results may also be visualised by using the following
 
 ```python
 sbd.plot()
+```
