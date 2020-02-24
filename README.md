@@ -50,10 +50,9 @@ pybees requires:
 
 ### Continuous function optimization 
 ```python
-from pybees.utils.continuous_single_obj import levy
-from pybees import SimpleBeesContinuous
+import pybees as pb
 
-sbc = SimpleBeesContinuous(
+sbc = pb.SimpleBeesContinuous(
     n_scout_bees = 50, 
     elite_site_params = (15, 40), 
     best_site_params = (15, 30),
@@ -66,7 +65,7 @@ sbc = SimpleBeesContinuous(
 This operation returns a `scipy.optimize.OptimizeResult`. `fun` represents the value of the objective function (lowest point). `nit` represents the number of iterations taken. `x` represents the coordinates of the value found for the objective function.
 
 ```python
->>> sbc.optimize(levy)
+>>> sbc.optimize(pb.levy)
 fun: 1.007063464503951e-06
 nit: 100
 x: array([0.99905553, 0.99967304])
@@ -81,10 +80,9 @@ sbc.plot(global_min = (1, 1))
 ### Combinatorial optimization (e.g. travelling salesperson problem)
 
 ```python
-from pybees.utils.combinatorial_single_obj import tour_distance
-from pybees import SimpleBeesDiscrete
+import pybees as pb
 
-sbd = SimpleBeesDiscrete(
+sbd = pb.SimpleBeesDiscrete(
     n_scout_bees = 50, 
     elite_site_params = (15, 40), 
     best_site_params = (15, 30), 
@@ -95,7 +93,7 @@ sbd = SimpleBeesDiscrete(
 This operation returns a `scipy.optimize.OptimizeResult`. `coordinates` represents a specific sequence of coordinates,  resulting from the optimization of some objective function. In this example, `tour_distance` was minimized. As such, `coordinates` represents the sequence, corresponding to the shortest path between all coordinates (i.e. travelling salesperson problem). `fun` represents the value of the objective function (shortest distance). `nit` represents the number of iterations taken. `x` represents the permutation of the original sequence passed to `SimpleBeesDiscrete` which gives the shortest distance.
 
 ```python
->>> sbd.optimize(tour_distance)
+>>> sbd.optimize(pb.tour_distance)
 coordinates: array([
        [7., 8.],
        [4., 8.],
