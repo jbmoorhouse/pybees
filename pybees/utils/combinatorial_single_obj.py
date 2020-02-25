@@ -65,6 +65,17 @@ def tour_distance(bee_permutations, coordinates):
     np.array([270.30924397 324.84195812])
     """
 
+    # Need to check the number of permutations and number of coordinates are 
+    # equal. This still outputs an answer when 
+    # bee_permutations.shape[1] < coordinates.shape[0]
+    m, n = bee_permutations.shape[1], coordinates.shape[0]
+
+    if m != n:
+        raise ValueError("Bad shape. Must satisfy "
+                         "bee_permutations[1] == coordinates.shape[0]. "
+                         f"Detected bee_permutation.shape[1] = {m} and "
+                         f"coordinates.shape[0] = {n}")
+
     c = coordinates[bee_permutations]
     tour = _tour_coordinates(c)
     
