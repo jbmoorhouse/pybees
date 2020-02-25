@@ -43,7 +43,7 @@ def tour_distance(bee_permutations, coordinates):
 
     Examples
     --------
-    >>> coordinates = np.random.randint(0, 50, [15, 2])
+    >>> coordinates = np.random.randint(50, [10, 2])
     >>> coordinates
     array([[44 47]
            [ 0  3]
@@ -56,7 +56,7 @@ def tour_distance(bee_permutations, coordinates):
            [38 39]
            [23 46]])
 
-    >>> bee_permutations = np.random.rand(2, 15).argsort(1)
+    >>> bee_permutations = np.random.rand(2, 10).argsort(1)
     >>> bee_permuations
     np.array([[4 2 3 0 6 9 5 7 1 8]
               [2 4 8 7 0 6 3 9 1 5]])
