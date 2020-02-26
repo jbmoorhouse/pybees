@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 def setup_package():
     setup(
         name="pybees", 
-        version="0.0.1",
+        version="0.0.2",
         author="Joseph Moorhouse",
         author_email="moorhouse@live.co.uk",
         description="A research toolkit for the Bees algorithm in Python",
@@ -19,7 +19,7 @@ def setup_package():
             "scipy>=1.3.2",
             "plotly>=4.4.1",
             "tqdm>=4.40.2",
-            "sklearn>=0.22",
+            "scikit-learn>=0.22",
             "pandas>=0.25.3"
         ],
         classifiers=[
