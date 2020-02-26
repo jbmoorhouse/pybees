@@ -4,17 +4,6 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 def setup_package():
-
-    setuptools_kwargs = {
-        "install_requires": [
-            "python-dateutil >= 2.6.1",
-            "pytz >= 2017.2",
-            f"numpy >= {min_numpy_ver}",
-        ],
-        "setup_requires": [f"numpy >= {min_numpy_ver}"],
-        "zip_safe": False,
-    }
-
     setup(
         name="pybees", 
         version="0.0.1",
@@ -25,7 +14,7 @@ def setup_package():
         long_description_content_type="text/markdown",
         url="https://github.com/jbmoorhouse/pybees",
         packages=find_packages(include=["pybees", "pybees.*"]),
-        install_requires: [
+        install_requires = [
             "numpy>=1.17.4",
             "scipy>=1.3.2",
             "plotly>=4.4.1",
