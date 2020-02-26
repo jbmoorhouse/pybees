@@ -3,10 +3,17 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("requirements.in") as f:
-    requirements = f.read().splitlines()
-
 def setup_package():
+
+    setuptools_kwargs = {
+        "install_requires": [
+            "python-dateutil >= 2.6.1",
+            "pytz >= 2017.2",
+            f"numpy >= {min_numpy_ver}",
+        ],
+        "setup_requires": [f"numpy >= {min_numpy_ver}"],
+        "zip_safe": False,
+    }
 
     setup(
         name="pybees", 
@@ -18,12 +25,21 @@ def setup_package():
         long_description_content_type="text/markdown",
         url="https://github.com/jbmoorhouse/pybees",
         packages=find_packages(include=["pybees", "pybees.*"]),
+        install_requires: [
+            "numpy>=1.17.4",
+            "scipy>=1.3.2",
+            "plotly>=4.4.1",
+            "tqdm>=4.40.2",
+            "sklearn>=0.22",
+            "pandas>=0.25.3"
+        ],
         classifiers=[
-            "Programming Language :: Python :: 3",
-            "License :: OSI Approved :: BSD 3 License",
+            "Programming Language :: Python :: 3.6",
             "Operating System :: OS Independent",
+            "Topic :: Scientific/Engineering"
         ],
         python_requires='>=3.6',
+
     )
 
 if __name__ == "__main__":
