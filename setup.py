@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 def setup_package():
     setup(
         name="pybees", 
-        version="0.0.2",
+        version="0.0.3",
         author="Joseph Moorhouse",
         author_email="moorhouse@live.co.uk",
         description="A research toolkit for the Bees algorithm in Python",
